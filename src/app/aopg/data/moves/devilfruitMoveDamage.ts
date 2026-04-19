@@ -1548,4 +1548,23 @@ export const devilFruitMoveDamage: MoveDamage[] = [
     U: 85000 * 1.15 * 4,
     Y: 110000 * 1.15 * 4,
   },
+  {
+    id: 119,
+    name: "Final Dark Quake",
+    M1: { dmg: 50000, cooldown: 1, scales: "strengthbuff" },
+    Q: { dmg: 10222.23, cooldown: 5, hits: 9 },
+    E: { dmg: 2818.63, cooldown: 11, hits: 51 },
+    F: { dmg: 24437.5, cooldown: 1, hits: 8, duration: 1 },
+    G: { dmg: 86250, cooldown: 4, hits: 3 },
+    modeOverrides: {
+      Q: { dmg: 195500, cooldown: 5, hits: 1 },
+      E: { dmg: 143750, cooldown: 11, hits: 1 },
+      F: { dmg: 230000, cooldown: 1, hits: 1 },
+      G: { dmg: 12500, cooldown: 4, hits: 23, duration: 3 },
+    },
+    specialBuffs: [
+      { name: "Swapping Hands (Off-Dark/On-Quake)", buff: 1, isMode: true },
+      { name: "Void Destruction", buff: 5, buffKey: { M1: 10 } },
+    ],
+  },
 ];

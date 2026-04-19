@@ -346,4 +346,15 @@ export const backAccData: Accessories[] = [
     haki: 0,
     fruit: 2500,
   },
+  {
+    id: 29,
+    name: "Dark Yonko's Cape",
+    strength: 2400,
+    stamina: 1500,
+    defense: 0,
+    sword: 0,
+    gun: 0,
+    haki: 1600,
+    fruit: 2750,
+  },
 ];

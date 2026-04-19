@@ -64,4 +64,13 @@ export const fruitActiveBuffs: ActiveBuffs[] = [
     strengthbuff: 4,
     hakibuff: 4,
   },
+  {
+    id: 7,
+    name: "Final Dark and Quake (Void Destruction)",
+    fruitbuff: 5,
+    swordbuff: 5,
+    gunbuff: 5,
+    strengthbuff: 5,
+    hakibuff: 5,
+  },
 ];

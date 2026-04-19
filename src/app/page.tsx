@@ -39,10 +39,18 @@ export default function Home() {
         {/* Footer */}
         <div className="mt-16 text-center">
           <span className="text-sm text-gray-400 mb-2">
-            Last updated: March 15, 2026
+            Last updated: April 19, 2026
           </span>
           <UpdateModal
             updates={[
+              {
+                version: "v1.3.0.0 | AOPG",
+                date: "April 19, 2026",
+                changes: [
+                  "Add final dark/quake damage",
+                  "Add final dark/quake buff and accessories",
+                ],
+              },
               {
                 version: "v1.2.9.0 | AOPG",
                 date: "April 13, 2026",

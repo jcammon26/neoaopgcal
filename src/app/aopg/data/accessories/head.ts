@@ -639,4 +639,15 @@ export const headAccData: Accessories[] = [
     haki: 0,
     fruit: 0,
   },
+  {
+    id: 58,
+    name: "Dark Yonko's Hat",
+    strength: 2000,
+    stamina: 1750,
+    defense: 0,
+    sword: 0,
+    gun: 0,
+    haki: 1500,
+    fruit: 3000,
+  },
 ];
