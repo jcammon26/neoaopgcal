@@ -353,10 +353,14 @@ const Calculator = () => {
           ? 0
           : pickBestBuff(availableSupportBuffs, scaleKey),
       suitBuff: pickBestBuff(suitActiveBuffs, scaleKey),
-      titleBuff: (selectedMove?.name?.toLowerCase().includes("title") || 
-                  (selectedMove?.specialBuffs && selectedMove.specialBuffs.some((b, idx) => b.isTitle && activeSpecialBuffs.includes(idx))))
-        ? 0
-        : pickBestBuff(titleBuffsData, scaleKey),
+      titleBuff:
+        selectedMove?.name?.toLowerCase().includes("title") ||
+        (selectedMove?.specialBuffs &&
+          selectedMove.specialBuffs.some(
+            (b, idx) => b.isTitle && activeSpecialBuffs.includes(idx),
+          ))
+          ? 0
+          : pickBestBuff(titleBuffsData, scaleKey),
       raceBuff: pickBestBuff(raceBuffsData, scaleKey),
       armamentBuff: pickBestBuff(armamentActiveBuffs, scaleKey),
       conquerorsBuff: 3,
@@ -368,11 +372,11 @@ const Calculator = () => {
 
     // ===== Base Stats =====
     setBaseStats({
-      fruit: 14285,
-      sword: 14285,
-      gun: 14285,
-      strength: 14285,
-      haki: 14285,
+      fruit: 15000,
+      sword: 15000,
+      gun: 15000,
+      strength: 15000,
+      haki: 15000,
     });
   };
 
@@ -419,8 +423,13 @@ const Calculator = () => {
     if (!selectedMove) return activeScale;
 
     const moveData = selectedMove[moveKey as keyof MoveDamage] as MoveData;
-    if (typeof moveData === "object" && moveData !== null && "scales" in moveData && moveData.scales) {
-        return moveData.scales;
+    if (
+      typeof moveData === "object" &&
+      moveData !== null &&
+      "scales" in moveData &&
+      moveData.scales
+    ) {
+      return moveData.scales;
     }
 
     // Check if there's a per-key scale defined mapping
@@ -474,7 +483,9 @@ const Calculator = () => {
     // Check if it's split damage (array of {scale, damage} objects)
     if (isSplitDamage(scalesForKey)) {
       // Sum all the split damages
-      const uniqueScales = Array.from(new Set(scalesForKey.map((s) => s.scale)));
+      const uniqueScales = Array.from(
+        new Set(scalesForKey.map((s) => s.scale)),
+      );
       const totalDamage = scalesForKey.reduce((total, { scale, damage }) => {
         const scaledAccBonus = getScaledAccBonus(scale);
         const buffMult = damageBuffs[scaleToBuffKey[scale]] || 1;
@@ -496,7 +507,9 @@ const Calculator = () => {
     }
 
     // Handle regular scales (single or array for max)
-    const scales: DamageScale[] = Array.isArray(scalesForKey) ? scalesForKey : [scalesForKey as DamageScale];
+    const scales: DamageScale[] = Array.isArray(scalesForKey)
+      ? scalesForKey
+      : [scalesForKey as DamageScale];
 
     // Calculate damage for each scale and keep track of the scale that gave the max
     let maxDamage = -1;
@@ -531,7 +544,6 @@ const Calculator = () => {
       className: damageScaleToClass[bestScale] || "",
     };
   };
-
 
   const buffFieldsets = [
     {
@@ -771,7 +783,12 @@ const Calculator = () => {
     setAvailableFightingBuffs(fightingFiltered);
     setAvailableSupportBuffs(supportFiltered);
 
-    const lockTitleBuff = hasTitleInName || (selectedMove?.specialBuffs && selectedMove.specialBuffs.some((b, idx) => b.isTitle && activeSpecialBuffs.includes(idx)));
+    const lockTitleBuff =
+      hasTitleInName ||
+      (selectedMove?.specialBuffs &&
+        selectedMove.specialBuffs.some(
+          (b, idx) => b.isTitle && activeSpecialBuffs.includes(idx),
+        ));
 
     setBuffs((prev) => ({
       ...prev,
@@ -912,8 +929,8 @@ const Calculator = () => {
 
                 <input
                   type="range"
-                  min="1"
-                  max="14285"
+                  min="0"
+                  max="15000"
                   value={value}
                   onChange={(e) =>
                     setBaseStats((prev) => ({
@@ -926,13 +943,13 @@ const Calculator = () => {
 
                 <input
                   type="number"
-                  min="1"
-                  max="14285"
+                  min="0"
+                  max="15000"
                   value={value}
                   onChange={(e) => {
                     const val = Math.min(
-                      14285,
-                      Math.max(1, Number(e.target.value) || 1),
+                      15000,
+                      Math.max(0, Number(e.target.value) || 0),
                     );
                     setBaseStats((prev) => ({
                       ...prev,
@@ -1119,8 +1136,12 @@ const Calculator = () => {
                 !!selectedMove &&
                 (sourceToBuffKey[selectedMove.source] === key ||
                   (key === "titleBuff" &&
-                    (selectedMove.name?.toLowerCase().includes("title") || 
-                     (selectedMove.specialBuffs && selectedMove.specialBuffs.some((b, idx) => b.isTitle && activeSpecialBuffs.includes(idx))))));
+                    (selectedMove.name?.toLowerCase().includes("title") ||
+                      (selectedMove.specialBuffs &&
+                        selectedMove.specialBuffs.some(
+                          (b, idx) =>
+                            b.isTitle && activeSpecialBuffs.includes(idx),
+                        )))));
               // Get selected buff object
               const selectedBuffId = buffs[key as keyof typeof buffs];
               const selectedBuff = data.find(
@@ -1236,7 +1257,9 @@ const Calculator = () => {
                 <span>Move</span>
                 {selectedMove?.mode !== undefined && (
                   <label className="cursor-pointer flex items-center justify-center gap-2">
-                    <span className="label-text font-bold">{selectedMove?.mode?.name || "Enable Mode"}</span>
+                    <span className="label-text font-bold">
+                      {selectedMove?.mode?.name || "Enable Mode"}
+                    </span>
                     <input
                       type="checkbox"
                       className="toggle toggle-primary toggle-sm"
@@ -1258,7 +1281,10 @@ const Calculator = () => {
                   </label>
                 )}
                 {selectedMove?.specialBuffs?.map((buff, idx) => (
-                  <label key={idx} className="cursor-pointer flex items-center justify-center gap-2">
+                  <label
+                    key={idx}
+                    className="cursor-pointer flex items-center justify-center gap-2"
+                  >
                     <span className="label-text font-bold">{buff.name}</span>
                     <input
                       type="checkbox"
@@ -1272,19 +1298,23 @@ const Calculator = () => {
                               // If exclusive mode enabled, turn off ALL other modes
                               setIsModeActive(false);
                               setActiveSpecialBuffs((prev) =>
-                                prev.filter((i) => {
-                                  const b = selectedMove?.specialBuffs?.[i];
-                                  return !b?.isMode; // Keep only non-mode buffs
-                                }).concat(idx)
+                                prev
+                                  .filter((i) => {
+                                    const b = selectedMove?.specialBuffs?.[i];
+                                    return !b?.isMode; // Keep only non-mode buffs
+                                  })
+                                  .concat(idx),
                               );
                             } else {
                               // If stackable mode enabled, turn off any non-stackable modes (including main)
                               setIsModeActive(false);
                               setActiveSpecialBuffs((prev) =>
-                                prev.filter((i) => {
-                                  const b = selectedMove?.specialBuffs?.[i];
-                                  return !(b?.isMode && !b?.stackable);
-                                }).concat(idx)
+                                prev
+                                  .filter((i) => {
+                                    const b = selectedMove?.specialBuffs?.[i];
+                                    return !(b?.isMode && !b?.stackable);
+                                  })
+                                  .concat(idx),
                               );
                             }
                           } else {
@@ -1339,8 +1369,13 @@ const Calculator = () => {
                     <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
                     Hits
                   </div>
-                  <p className="text-[10px] uppercase opacity-50 font-bold ml-3.5 mb-1">Impacts per cast</p>
-                  <p className="text-xs opacity-70 ml-3.5 leading-tight">Total number of separate damage ticks or strikes for the move.</p>
+                  <p className="text-[10px] uppercase opacity-50 font-bold ml-3.5 mb-1">
+                    Impacts per cast
+                  </p>
+                  <p className="text-xs opacity-70 ml-3.5 leading-tight">
+                    Total number of separate damage ticks or strikes for the
+                    move.
+                  </p>
                 </div>
 
                 <div className="group">
@@ -1348,8 +1383,13 @@ const Calculator = () => {
                     <div className="w-1.5 h-1.5 rounded-full bg-secondary"></div>
                     Max Damage
                   </div>
-                  <p className="text-[10px] uppercase opacity-50 font-bold ml-3.5 mb-1">Final output</p>
-                  <p className="text-xs opacity-70 ml-3.5 leading-tight">The ultimate damage calculated including all stats, active buffs, and mode multipliers.</p>
+                  <p className="text-[10px] uppercase opacity-50 font-bold ml-3.5 mb-1">
+                    Final output
+                  </p>
+                  <p className="text-xs opacity-70 ml-3.5 leading-tight">
+                    The ultimate damage calculated including all stats, active
+                    buffs, and mode multipliers.
+                  </p>
                 </div>
 
                 <div className="group">
@@ -1357,8 +1397,12 @@ const Calculator = () => {
                     <div className="w-1.5 h-1.5 rounded-full bg-accent"></div>
                     CD (Cooldown)
                   </div>
-                  <p className="text-[10px] uppercase opacity-50 font-bold ml-3.5 mb-1">Wait time</p>
-                  <p className="text-xs opacity-70 ml-3.5 leading-tight">The time in seconds needed before you can re-use the move.</p>
+                  <p className="text-[10px] uppercase opacity-50 font-bold ml-3.5 mb-1">
+                    Wait time
+                  </p>
+                  <p className="text-xs opacity-70 ml-3.5 leading-tight">
+                    The time in seconds needed before you can re-use the move.
+                  </p>
                 </div>
 
                 <div className="group">
@@ -1366,8 +1410,13 @@ const Calculator = () => {
                     <div className="w-1.5 h-1.5 rounded-full bg-info"></div>
                     Duration
                   </div>
-                  <p className="text-[10px] uppercase opacity-50 font-bold ml-3.5 mb-1">Active time</p>
-                  <p className="text-xs opacity-70 ml-3.5 leading-tight">The total time in seconds the move continues to impact the target.</p>
+                  <p className="text-[10px] uppercase opacity-50 font-bold ml-3.5 mb-1">
+                    Active time
+                  </p>
+                  <p className="text-xs opacity-70 ml-3.5 leading-tight">
+                    The total time in seconds the move continues to impact the
+                    target.
+                  </p>
                 </div>
 
                 <div className="group">
@@ -1375,10 +1424,14 @@ const Calculator = () => {
                     <div className="w-1.5 h-1.5 rounded-full bg-success"></div>
                     DPS
                   </div>
-                  <p className="text-[10px] uppercase opacity-50 font-bold ml-3.5 mb-1">Average sustained</p>
+                  <p className="text-[10px] uppercase opacity-50 font-bold ml-3.5 mb-1">
+                    Average sustained
+                  </p>
                   <p className="text-xs opacity-70 ml-3.5 leading-tight">
-                    Damage Per Second, calculated as: <br/>
-                    <span className="text-[10px] font-mono text-warning">Damage ÷ (Cooldown + Duration)</span>
+                    Damage Per Second, calculated as: <br />
+                    <span className="text-[10px] font-mono text-warning">
+                      Damage ÷ (Cooldown + Duration)
+                    </span>
                   </p>
                 </div>
               </div>
@@ -1404,65 +1457,88 @@ const Calculator = () => {
               <tbody>
                 {selectedMove &&
                   moveKeys.map((key, idx) => {
-                    const moveData = selectedMove[key as keyof MoveDamage] as MoveData;
+                    const moveData = selectedMove[
+                      key as keyof MoveDamage
+                    ] as MoveData;
                     const dmgRaw = getMoveDamageValue(moveData);
-                    
+
                     let cdObj: number | undefined = undefined;
                     let durObj: number | undefined = undefined;
                     let hitsObj: number | undefined = undefined;
                     if (typeof moveData === "object" && moveData !== null) {
-                        if ("cooldown" in moveData) cdObj = moveData.cooldown;
-                        if ("duration" in moveData) durObj = moveData.duration;
-                        if ("hits" in moveData) hitsObj = moveData.hits;
-                    } 
+                      if ("cooldown" in moveData) cdObj = moveData.cooldown;
+                      if ("duration" in moveData) durObj = moveData.duration;
+                      if ("hits" in moveData) hitsObj = moveData.hits;
+                    }
 
                     let overrideHits = hitsObj !== undefined ? hitsObj : 1;
                     let overrideCd = cdObj;
                     let overrideDur = durObj;
                     let finalRawDmg = dmgRaw;
 
-                    const isCombinedModeActive = isModeActive || (selectedMove.specialBuffs?.some((b, i) => b.isMode && activeSpecialBuffs.includes(i)));
+                    const isCombinedModeActive =
+                      isModeActive ||
+                      selectedMove.specialBuffs?.some(
+                        (b, i) => b.isMode && activeSpecialBuffs.includes(i),
+                      );
                     if (isCombinedModeActive) {
-                      if (selectedMove.modeOverrides?.[key as MoveKey] !== undefined) {
-                        const overrideData = selectedMove.modeOverrides[key as MoveKey] as MoveData;
+                      if (
+                        selectedMove.modeOverrides?.[key as MoveKey] !==
+                        undefined
+                      ) {
+                        const overrideData = selectedMove.modeOverrides[
+                          key as MoveKey
+                        ] as MoveData;
                         finalRawDmg = getMoveDamageValue(overrideData);
-                        
-                        if (typeof overrideData === "object" && overrideData !== null) {
-                          if ("hits" in overrideData && overrideData.hits) overrideHits = overrideData.hits;
-                          if ("cooldown" in overrideData) overrideCd = overrideData.cooldown;
-                          if ("duration" in overrideData) overrideDur = overrideData.duration;
+
+                        if (
+                          typeof overrideData === "object" &&
+                          overrideData !== null
+                        ) {
+                          if ("hits" in overrideData && overrideData.hits)
+                            overrideHits = overrideData.hits;
+                          if ("cooldown" in overrideData)
+                            overrideCd = overrideData.cooldown;
+                          if ("duration" in overrideData)
+                            overrideDur = overrideData.duration;
                         }
                       }
-                      
+
                       if (selectedMove.mode !== undefined) {
                         finalRawDmg = finalRawDmg * selectedMove.mode.buff;
                       }
                     }
-                    
+
                     if (selectedMove.specialBuffs) {
-                       selectedMove.specialBuffs.forEach((buff, idx) => {
-                          if (activeSpecialBuffs.includes(idx)) {
-                             if (buff.exclude?.includes(key as MoveKey)) return;
-                             const multiplier = buff.buffKey?.[key as MoveKey] ?? buff.buff;
-                             finalRawDmg = finalRawDmg * multiplier;
-                          }
-                       });
+                      selectedMove.specialBuffs.forEach((buff, idx) => {
+                        if (activeSpecialBuffs.includes(idx)) {
+                          if (buff.exclude?.includes(key as MoveKey)) return;
+                          const multiplier =
+                            buff.buffKey?.[key as MoveKey] ?? buff.buff;
+                          finalRawDmg = finalRawDmg * multiplier;
+                        }
+                      });
                     }
 
-                    if (cdObj === undefined && selectedMove.cooldowns?.[key as MoveKey]) {
-                        cdObj = selectedMove.cooldowns[key as MoveKey];
+                    if (
+                      cdObj === undefined &&
+                      selectedMove.cooldowns?.[key as MoveKey]
+                    ) {
+                      cdObj = selectedMove.cooldowns[key as MoveKey];
                     }
-                    if (overrideCd === undefined && cdObj !== undefined) overrideCd = cdObj;
-                    if (overrideDur === undefined && durObj !== undefined) overrideDur = durObj;
+                    if (overrideCd === undefined && cdObj !== undefined)
+                      overrideCd = cdObj;
+                    if (overrideDur === undefined && durObj !== undefined)
+                      overrideDur = durObj;
 
                     const { damage, className, style } = getFinalDamage(
                       finalRawDmg,
                       key as MoveKey,
-                      overrideHits
+                      overrideHits,
                     );
 
                     const cycleTime = (overrideCd || 0) + (overrideDur || 0);
-                    const dps = cycleTime > 0 ? (damage / cycleTime) : 0;
+                    const dps = cycleTime > 0 ? damage / cycleTime : 0;
 
                     return (
                       <tr key={`max-${key}-${idx}`}>
@@ -1479,24 +1555,38 @@ const Calculator = () => {
                         </td>
                         <td>
                           <div className="flex flex-col items-center">
-                            <span>{overrideCd !== undefined ? `${overrideCd}s` : "-"}</span>
+                            <span>
+                              {overrideCd !== undefined
+                                ? `${overrideCd}s`
+                                : "-"}
+                            </span>
                           </div>
                         </td>
                         <td>
                           <div className="flex flex-col items-center">
-                            <span>{overrideDur !== undefined ? `${overrideDur}s` : "-"}</span>
+                            <span>
+                              {overrideDur !== undefined
+                                ? `${overrideDur}s`
+                                : "-"}
+                            </span>
                           </div>
                         </td>
                         <td className={className} style={style}>
                           <div className="flex flex-col items-center">
-                            <span>{cycleTime > 0 ? Math.round(dps).toLocaleString() : "-"}</span>
+                            <span>
+                              {cycleTime > 0
+                                ? Math.round(dps).toLocaleString()
+                                : "-"}
+                            </span>
                           </div>
                         </td>
                       </tr>
                     );
                   })}
                 <tr className="font-bold border-t-2 border-base-content/20 bg-base-200">
-                  <td className="text-primary uppercase tracking-wider text-xs">Total</td>
+                  <td className="text-primary uppercase tracking-wider text-xs">
+                    Total
+                  </td>
                   <td></td>
                   <td className="text-lg">
                     {selectedMove ? (
@@ -1504,36 +1594,71 @@ const Calculator = () => {
                         <span className="drop-shadow-sm">
                           {Math.round(
                             moveKeys.reduce((sum, key) => {
-                              let md = selectedMove[key as keyof MoveDamage] as MoveData;
+                              let md = selectedMove[
+                                key as keyof MoveDamage
+                              ] as MoveData;
                               let h = 1;
-                              if (typeof md === "object" && md !== null && "hits" in md && md.hits) h = md.hits;
+                              if (
+                                typeof md === "object" &&
+                                md !== null &&
+                                "hits" in md &&
+                                md.hits
+                              )
+                                h = md.hits;
                               let dmgR = getMoveDamageValue(md);
-                              
-                              const isCombinedModeActive = isModeActive || (selectedMove.specialBuffs?.some((b, i) => b.isMode && activeSpecialBuffs.includes(i)));
+
+                              const isCombinedModeActive =
+                                isModeActive ||
+                                selectedMove.specialBuffs?.some(
+                                  (b, i) =>
+                                    b.isMode && activeSpecialBuffs.includes(i),
+                                );
                               if (isCombinedModeActive) {
-                                if (selectedMove.modeOverrides?.[key as MoveKey] !== undefined) {
-                                  md = selectedMove.modeOverrides[key as MoveKey] as MoveData;
-                                  if (typeof md === "object" && md !== null && "hits" in md && md.hits) h = md.hits;
+                                if (
+                                  selectedMove.modeOverrides?.[
+                                    key as MoveKey
+                                  ] !== undefined
+                                ) {
+                                  md = selectedMove.modeOverrides[
+                                    key as MoveKey
+                                  ] as MoveData;
+                                  if (
+                                    typeof md === "object" &&
+                                    md !== null &&
+                                    "hits" in md &&
+                                    md.hits
+                                  )
+                                    h = md.hits;
                                   dmgR = getMoveDamageValue(md);
                                 }
                                 if (selectedMove.mode !== undefined) {
                                   dmgR = dmgR * selectedMove.mode.buff;
                                 }
                               }
-                              
+
                               if (selectedMove.specialBuffs) {
-                                 selectedMove.specialBuffs.forEach((buff, idx) => {
+                                selectedMove.specialBuffs.forEach(
+                                  (buff, idx) => {
                                     if (activeSpecialBuffs.includes(idx)) {
-                                       if (buff.exclude?.includes(key as MoveKey)) return;
-                                       const multiplier = buff.buffKey?.[key as MoveKey] ?? buff.buff;
-dmgR = dmgR * multiplier;
+                                      if (
+                                        buff.exclude?.includes(key as MoveKey)
+                                      )
+                                        return;
+                                      const multiplier =
+                                        buff.buffKey?.[key as MoveKey] ??
+                                        buff.buff;
+                                      dmgR = dmgR * multiplier;
                                     }
-                                 });
+                                  },
+                                );
                               }
-                              
+
                               if (dmgR === 0) return sum;
-                              return sum + getFinalDamage(dmgR, key as MoveKey, h).damage;
-                            }, 0)
+                              return (
+                                sum +
+                                getFinalDamage(dmgR, key as MoveKey, h).damage
+                              );
+                            }, 0),
                           ).toLocaleString()}
                         </span>
                       </div>
@@ -1549,54 +1674,93 @@ dmgR = dmgR * multiplier;
                         <span className="drop-shadow-sm">
                           {Math.round(
                             moveKeys.reduce((sum, key) => {
-                              let md = selectedMove[key as keyof MoveDamage] as MoveData;
+                              let md = selectedMove[
+                                key as keyof MoveDamage
+                              ] as MoveData;
                               let h = 1;
-                              if (typeof md === "object" && md !== null && "hits" in md && md.hits) h = md.hits;
+                              if (
+                                typeof md === "object" &&
+                                md !== null &&
+                                "hits" in md &&
+                                md.hits
+                              )
+                                h = md.hits;
                               let dmgR = getMoveDamageValue(md);
-                              
+
                               let cdO: number | undefined = undefined;
                               let durO: number | undefined = undefined;
                               if (typeof md === "object" && md !== null) {
-                                  if ("cooldown" in md) cdO = md.cooldown;
-                                  if ("duration" in md) durO = md.duration;
+                                if ("cooldown" in md) cdO = md.cooldown;
+                                if ("duration" in md) durO = md.duration;
                               }
 
-                              const isCombinedModeActive = isModeActive || (selectedMove.specialBuffs?.some((b, i) => b.isMode && activeSpecialBuffs.includes(i)));
+                              const isCombinedModeActive =
+                                isModeActive ||
+                                selectedMove.specialBuffs?.some(
+                                  (b, i) =>
+                                    b.isMode && activeSpecialBuffs.includes(i),
+                                );
                               if (isCombinedModeActive) {
-                                if (selectedMove.modeOverrides?.[key as MoveKey] !== undefined) {
-                                  md = selectedMove.modeOverrides[key as MoveKey] as MoveData;
-                                  if (typeof md === "object" && md !== null && "hits" in md && md.hits) h = md.hits;
+                                if (
+                                  selectedMove.modeOverrides?.[
+                                    key as MoveKey
+                                  ] !== undefined
+                                ) {
+                                  md = selectedMove.modeOverrides[
+                                    key as MoveKey
+                                  ] as MoveData;
+                                  if (
+                                    typeof md === "object" &&
+                                    md !== null &&
+                                    "hits" in md &&
+                                    md.hits
+                                  )
+                                    h = md.hits;
                                   dmgR = getMoveDamageValue(md);
                                   if (typeof md === "object" && md !== null) {
-                                      if ("cooldown" in md) cdO = md.cooldown;
-                                      if ("duration" in md) durO = md.duration;
+                                    if ("cooldown" in md) cdO = md.cooldown;
+                                    if ("duration" in md) durO = md.duration;
                                   }
                                 }
                                 if (selectedMove.mode !== undefined) {
                                   dmgR = dmgR * selectedMove.mode.buff;
                                 }
                               }
-                              
+
                               if (selectedMove.specialBuffs) {
-                                 selectedMove.specialBuffs.forEach((buff, idx) => {
+                                selectedMove.specialBuffs.forEach(
+                                  (buff, idx) => {
                                     if (activeSpecialBuffs.includes(idx)) {
-                                       if (buff.exclude?.includes(key as MoveKey)) return;
-                                       const multiplier = buff.buffKey?.[key as MoveKey] ?? buff.buff;
-dmgR = dmgR * multiplier;
+                                      if (
+                                        buff.exclude?.includes(key as MoveKey)
+                                      )
+                                        return;
+                                      const multiplier =
+                                        buff.buffKey?.[key as MoveKey] ??
+                                        buff.buff;
+                                      dmgR = dmgR * multiplier;
                                     }
-                                 });
+                                  },
+                                );
                               }
-                              
+
                               if (dmgR === 0) return sum;
 
-                              if (cdO === undefined && selectedMove.cooldowns?.[key as MoveKey]) {
-                                  cdO = selectedMove.cooldowns[key as MoveKey];
+                              if (
+                                cdO === undefined &&
+                                selectedMove.cooldowns?.[key as MoveKey]
+                              ) {
+                                cdO = selectedMove.cooldowns[key as MoveKey];
                               }
 
-                              const { damage } = getFinalDamage(dmgR, key as MoveKey, h);
+                              const { damage } = getFinalDamage(
+                                dmgR,
+                                key as MoveKey,
+                                h,
+                              );
                               const ct = (cdO || 0) + (durO || 0);
-                              return sum + (ct > 0 ? (damage / ct) : 0);
-                            }, 0)
+                              return sum + (ct > 0 ? damage / ct : 0);
+                            }, 0),
                           ).toLocaleString()}
                         </span>
                       </div>
