@@ -119,4 +119,15 @@ export const armAccData: Accessories[] = [
     haki: 1200,
     fruit: 1500,
   },
+  {
+    id: 10,
+    name: "Vector Master's Crutch",
+    strength: 0,
+    stamina: 0,
+    defense: 0,
+    sword: 0,
+    gun: 0,
+    haki: 2500,
+    fruit: 2500,
+  },
 ];

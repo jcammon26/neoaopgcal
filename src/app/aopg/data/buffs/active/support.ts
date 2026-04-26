@@ -388,4 +388,13 @@ export const supportActiveBuffs: ActiveBuffs[] = [
     strengthbuff: 1.2,
     hakibuff: 1.2,
   },
+  {
+    id: 43,
+    name: "Vector Control (Black Wings)",
+    fruitbuff: 4.2,
+    swordbuff: 4.2,
+    gunbuff: 4.2,
+    strengthbuff: 4.2,
+    hakibuff: 4.2,
+  },
 ];

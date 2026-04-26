@@ -817,4 +817,19 @@ export const supportStyleMoveDamage: MoveDamage[] = [
     U: 0,
     Y: 0,
   },
+  {
+    id: 62,
+    name: "Vector Control",
+    specialBuffs: [{ name: "Black Wings", buff: 4.2, isMode: true }],
+    Q: { dmg: 60000 * 1.15, cooldown: 2 },
+    E: { dmg: 70000 * 1.15, cooldown: 2 },
+    R: { dmg: 80000 * 1.15, cooldown: 2 },
+    T: { dmg: 90000 * 1.15, cooldown: 2 },
+    G: { dmg: 100000 * 1.15, cooldown: 2 },
+    modeOverrides: {
+      M1: { dmg: 30000 * 1.15, cooldown: 0.5 },
+      U: { dmg: 180000 * 1.15, cooldown: 5 },
+    },
+    scale: "fruitbuff",
+  },
 ];

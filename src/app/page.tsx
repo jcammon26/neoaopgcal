@@ -22,6 +22,19 @@ export default function Home() {
             </div>
           </Link>
 
+          {/* Pirate Calculator Card */}
+          {/* <Link href="/pirate">
+            <div className="bg-gradient-to-br from-purple-600/50 to-purple-800/50 hover:from-purple-500 hover:to-purple-700 transition-all duration-300 rounded-2xl p-8 w-80 h-64 flex flex-col items-center justify-center cursor-pointer shadow-2xl hover:shadow-purple-500/50 hover:scale-105 transform">
+              <h2 className="text-3xl font-bold text-white mb-4">Pirate</h2>
+              <p className="text-purple-100 text-center text-lg">
+                Pirate Piece Calculator
+              </p>
+              <div className="mt-6 text-sm text-purple-200">
+                Click to enter →
+              </div>
+            </div>
+          </Link> */}
+
           {/* Verse Calculator Card */}
           {/* <Link href="/verse">
             <div className="bg-gradient-to-br from-purple-600/50 to-purple-800/50 hover:from-purple-500 hover:to-purple-700 transition-all duration-300 rounded-2xl p-8 w-80 h-64 flex flex-col items-center justify-center cursor-pointer shadow-2xl hover:shadow-purple-500/50 hover:scale-105 transform">
@@ -43,6 +56,14 @@ export default function Home() {
           </span>
           <UpdateModal
             updates={[
+              {
+                version: "v1.3.1.0 | AOPG",
+                date: "April 19, 2026",
+                changes: [
+                  "Add vector damage",
+                  "Add vector buff and accessories",
+                ],
+              },
               {
                 version: "v1.3.0.0 | AOPG",
                 date: "April 19, 2026",
