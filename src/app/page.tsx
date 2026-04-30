@@ -23,7 +23,7 @@ export default function Home() {
           </Link>
 
           {/* Pirate Calculator Card */}
-          {/* <Link href="/pirate">
+          <Link href="/pirate">
             <div className="bg-gradient-to-br from-purple-600/50 to-purple-800/50 hover:from-purple-500 hover:to-purple-700 transition-all duration-300 rounded-2xl p-8 w-80 h-64 flex flex-col items-center justify-center cursor-pointer shadow-2xl hover:shadow-purple-500/50 hover:scale-105 transform">
               <h2 className="text-3xl font-bold text-white mb-4">Pirate</h2>
               <p className="text-purple-100 text-center text-lg">
@@ -33,7 +33,7 @@ export default function Home() {
                 Click to enter →
               </div>
             </div>
-          </Link> */}
+          </Link>
 
           {/* Verse Calculator Card */}
           {/* <Link href="/verse">
@@ -52,10 +52,15 @@ export default function Home() {
         {/* Footer */}
         <div className="mt-16 text-center">
           <span className="text-sm text-gray-400 mb-2">
-            Last updated: April 19, 2026
+            Last updated: April 30, 2026
           </span>
           <UpdateModal
             updates={[
+              {
+                version: "v1.3.2.0 | AOPG",
+                date: "April 30, 2026",
+                changes: ["Add pirate piece calculator"],
+              },
               {
                 version: "v1.3.1.0 | AOPG",
                 date: "April 19, 2026",

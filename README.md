@@ -1,154 +1,75 @@
 # Roblox Game Damage Calculator
 
-A Next.js web application for calculating damage in Roblox anime games. Currently supports **A One Piece Game (AOPG)** and **Verse Piece**.
+A Next.js app for calculating damage and optimizing builds in Roblox anime games. Three calculators in one project:
 
-## Overview
+- **AOPG** — *A One Piece Game*. Accessories, active/passive buffs, six move-damage tables, multi-scale damage system.
+- **Verse** — *Verse Piece*. Stat allocation, ghost rank, accessories with enhancement, traits, four move types (sword / fruit / fighting / spec).
+- **Pirate** — newest calculator. 18-stat `BaseBuff` system, race/clan/trait + aura + avatar (with level scaling) + milestone tiles, click-any-stat-to-maximize.
 
-This calculator helps players optimize their builds by computing damage output based on:
+## Tech
 
-- **Base Stats** - Strength, Defense, Sword, Special
-- **Passive Buffs** - Titles, Races, Hakis, Relics, Abilities, Prestiges, Wisps
-- **Equipment** - Accessories with enhancement levels
-- **Traits** - Active and passive trait damage multipliers
-- **Moves** - Sword styles, Fruits, Fighting styles, Specs with base damage values
-- **Modifiers** - Enhancement levels, Blessing multipliers
+- Next.js 15 (Turbopack) + React 19 + TypeScript
+- Tailwind CSS 4 + DaisyUI 5
 
-### Damage Formula
+## Install
 
-```
-finalDamage = baseDamage * (1 + totalStat / 75) * damageMultiplier * enhanceMult * blessingMult
-```
-
-Where:
-- `totalStat` = baseStat + ghostStat + accessoryStat + traitStat
-- `damageMultiplier` = All buff multipliers combined (title, race, haki, relic, ability, prestige, wisp, trait)
-- `enhanceMult` = `enhanceLevel * 2.5` (sword moves only)
-- `blessingMult` = `2.5` when blessing is enabled
-
-## Features
-
-### AOPG Calculator (`/aopg`)
-- Accessory slots (Head, Top, Waist, Legs, Arm, Back)
-- Active buffs (Armament, Conquerors, Fighting, Fruit, Gun, Suit, Support, Sword)
-- Passive buffs (Race, Title, Blacksmith, Giant, Artifact)
-- Move damage tables for different fighting styles
-
-### Verse Calculator (`/verse`)
-- Base stat allocation with ghost rank bonuses
-- Passive buff selectors (Title, Race, Haki, Relic, Ability, Prestige, Wisp)
-- Accessory and Trait selection with enhancement
-- Move damage calculator with:
-  - Move types: Sword, Fruit, Fighting, Spec
-  - Enhancement levels (1-10) for swords
-  - Blessing modifier (2.5x damage)
-- Automatic stat-to-move mapping:
-  - Sword moves use Sword stat
-  - Fighting moves use Strength stat
-  - Fruit/Spec moves use Special stat
-
-## Tech Stack
-
-- **Framework**: Next.js 15 with Turbopack
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS 4 + DaisyUI 5
-- **React**: React 19
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18+
-- npm, yarn, pnpm, or bun
-
-### Installation
-
-1. Clone the repository:
 ```bash
 git clone <repository-url>
 cd aopg-calculator
-```
-
-2. Install dependencies:
-```bash
 npm install
-# or
-yarn install
-# or
-pnpm install
-# or
-bun install
 ```
 
-### Running the Development Server
+(`yarn`, `pnpm`, and `bun` also work — pick whichever you have.)
+
+## Run
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run dev      # dev server with hot reload — http://localhost:3000
+npm run build    # production build
+npm run start    # serve production build
+npm run lint     # ESLint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+## Use
 
-### Building for Production
+1. Open [http://localhost:3000](http://localhost:3000).
+2. Pick a calculator from the home page (AOPG / Verse / Pirate).
+3. Set your base stats, choose buffs, equip accessories. Numbers update live.
+4. In the Pirate calculator, click any stat in the Stats Overview panel to auto-pick the race/clan/trait/aura/avatar/milestones combo that maximizes it.
 
-```bash
-npm run build
-npm run start
-```
-
-### Linting
-
-```bash
-npm run lint
-```
-
-## Project Structure
+## Project layout
 
 ```
 src/app/
-├── page.tsx                 # Home page with calculator selection
-├── aopg/                    # AOPG Calculator
-│   ├── page.tsx
-│   ├── views/               # UI components
-│   ├── data/
-│   │   ├── accessories/     # Accessory data (head, top, waist, etc.)
-│   │   ├── buffs/           # Active & passive buff data
-│   │   └── moves/           # Move damage data
-│   ├── hooks/               # Custom hooks
-│   └── utils/               # Damage calculation utilities
-├── verse/                   # Verse Calculator
-│   ├── page.tsx
-│   ├── views/               # UI components
-│   │   └── calculator.tsx   # Main calculator component
-│   ├── data/
-│   │   ├── passive/         # Buff data (titles, races, hakis, etc.)
-│   │   ├── stat_related/    # Stats, accessories, traits
-│   │   └── moves/           # Move data (swords, fruits, etc.)
-│   └── HOW_TO_ADD_BUFF.md   # Guide for adding new data
+├── page.tsx          # home page (calculator picker)
+├── aopg/             # AOPG calculator
+│   ├── views/
+│   ├── data/         # accessories/, buffs/active/, buffs/passive/, moves/
+│   ├── hooks/
+│   └── utils/
+├── verse/            # Verse calculator
+│   ├── views/
+│   └── data/         # passive/, stat_related/, moves/
+└── pirate/           # Pirate calculator
+    ├── views/
+    └── data/passive/ # races, clans, traits, auras, avatars
 ```
 
-## Adding New Data
+## Adding or editing data
 
-See the following guides:
-- [Verse: How to Add Buffs & Moves](src/app/verse/HOW_TO_ADD_BUFF.md)
-- [AOPG: Data Guide](src/app/aopg/data/GUIDE.md)
+See [customization.md](customization.md) for the full schema reference and step-by-step instructions for each calculator.
 
 ## Contributing
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/new-feature`)
-3. Commit your changes (`git commit -m 'Add new feature'`)
-4. Push to the branch (`git push origin feature/new-feature`)
-5. Open a Pull Request
+1. Fork the repo.
+2. Create a feature branch: `git checkout -b feature/my-thing`.
+3. Commit and push.
+4. Open a PR.
 
 ## Contact
 
-Need help? DM on Discord: **kingcode99**
+Discord: **kingcode99**
 
 ## License
 
-This project is for personal/educational use. Game data belongs to their respective Roblox game developers.
+Personal/educational use. Game data belongs to the respective Roblox game developers.

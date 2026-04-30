@@ -1,229 +1,118 @@
-import type { buffs } from "./types";
+import { buffs } from "./types";
 
 export const traitsData: buffs[] = [
-  {
-    id: 0,
-    name: "None",
-    baseBuff: {
-      strengthBuff: 1,
-      swordBuff: 1,
-      abilityBuff: 1,
-    },
-  },
-  {
-    id: 1,
-    name: "Sailor",
-    baseBuff: {
-      strengthBuff: 1.15,
-      swordBuff: 1.15,
-      abilityBuff: 1.15,
-    },
-  },
-  {
-    id: 2,
-    name: "Brawler",
-    baseBuff: {
-      strengthBuff: 1.15,
-      swordBuff: 1.15,
-      abilityBuff: 1.15,
-    },
-  },
-  {
-    id: 3,
-    name: "Haki Striker",
-    baseBuff: {
-      strengthBuff: 1.15,
-      swordBuff: 1.15,
-      abilityBuff: 1.15,
-    },
-  },
+  { id: 0, name: "None", baseBuff: {} },
+  { id: 1, name: "Swift", baseBuff: { cooldownReduction: 1.1 } },
+  { id: 2, name: "Sailor", baseBuff: { maxHealth: 1.05, damage: 1.15 } },
+  { id: 3, name: "Brawler", baseBuff: { maxHealth: 1.05, damage: 1.15 } },
   {
     id: 4,
-    name: "Rookie Crusher",
-    baseBuff: {
-      strengthBuff: 1.25,
-      swordBuff: 1.25,
-      abilityBuff: 1.25,
-    },
+    name: "Haki Striker",
+    baseBuff: { maxHealth: 1.1, damage: 1.15, cooldownReduction: 1.05 },
   },
   {
     id: 5,
-    name: "Marine Captain",
-    baseBuff: {
-      strengthBuff: 1.2,
-      swordBuff: 1.2,
-      abilityBuff: 1.2,
-    },
+    name: "Rookie Crusher",
+    baseBuff: { maxHealth: 1.15, damage: 1.25 },
   },
   {
     id: 6,
-    name: "Black Blade",
-    baseBuff: {
-      strengthBuff: 1.35,
-      swordBuff: 1.35,
-      abilityBuff: 1.35,
-    },
+    name: "Marine Captain",
+    baseBuff: { maxHealth: 1.2, damage: 1.2 },
   },
   {
     id: 7,
-    name: "Grand Line Reaper",
-    baseBuff: {
-      strengthBuff: 1.25,
-      swordBuff: 1.25,
-      abilityBuff: 1.25,
-    },
+    name: "Black Blade",
+    baseBuff: { maxHealth: 1.1, damage: 1.35 },
   },
   {
     id: 8,
-    name: "Pirate Hunter",
-    baseBuff: {
-      strengthBuff: 1.3,
-      swordBuff: 1.3,
-      abilityBuff: 1.3,
-    },
+    name: "Grand Line Reaper",
+    baseBuff: { maxHealth: 1.15, damage: 1.25, cooldownReduction: 1.05 },
   },
   {
     id: 9,
-    name: "Cipher Pol",
-    baseBuff: {
-      strengthBuff: 1.3,
-      swordBuff: 1.3,
-      abilityBuff: 1.3,
-    },
+    name: "Pirate Hunter",
+    baseBuff: { maxHealth: 1.15, damage: 1.3 },
   },
   {
     id: 10,
-    name: "Vice Admiral",
-    baseBuff: {
-      strengthBuff: 1.4,
-      swordBuff: 1.4,
-      abilityBuff: 1.4,
-    },
+    name: "Cipher Pol",
+    baseBuff: { maxHealth: 1.35, damage: 1.3, cooldownReduction: 1.1 },
   },
   {
     id: 11,
-    name: "Supernova",
-    baseBuff: {
-      strengthBuff: 1.3,
-      swordBuff: 1.3,
-      abilityBuff: 1.3,
-    },
+    name: "Vice Admiral",
+    baseBuff: { maxHealth: 1.35, damage: 1.4 },
   },
   {
     id: 12,
-    name: "Conqueror",
-    baseBuff: {
-      strengthBuff: 1.4,
-      swordBuff: 1.4,
-      abilityBuff: 1.4,
-    },
+    name: "Supernova",
+    baseBuff: { maxHealth: 1.55, damage: 1.3 },
   },
   {
     id: 13,
-    name: "Warlord",
-    baseBuff: {
-      strengthBuff: 1.5,
-      swordBuff: 1.5,
-      abilityBuff: 1.5,
-    },
+    name: "Conqueror",
+    baseBuff: { maxHealth: 1.4, damage: 1.4, cooldownReduction: 1.15 },
   },
   {
     id: 14,
-    name: "Admiral",
-    baseBuff: {
-      strengthBuff: 1.45,
-      swordBuff: 1.45,
-      abilityBuff: 1.45,
-    },
+    name: "Warlord",
+    baseBuff: { maxHealth: 1.45, damage: 1.5, cooldownReduction: 1.1 },
   },
   {
     id: 15,
-    name: "Fleet Admiral",
-    baseBuff: {
-      strengthBuff: 1.55,
-      swordBuff: 1.55,
-      abilityBuff: 1.55,
-    },
+    name: "Admiral",
+    baseBuff: { maxHealth: 1.7, damage: 1.45 },
   },
   {
     id: 16,
-    name: "Sun God",
-    baseBuff: {
-      strengthBuff: 1.8,
-      swordBuff: 1.8,
-      abilityBuff: 1.8,
-    },
+    name: "Fleet Admiral",
+    baseBuff: { maxHealth: 1.5, damage: 1.55, cooldownReduction: 1.25 },
   },
   {
     id: 17,
-    name: "Dark King",
-    baseBuff: {
-      strengthBuff: 1.8,
-      swordBuff: 1.8,
-      abilityBuff: 1.8,
-    },
+    name: "Sun God",
+    baseBuff: { maxHealth: 1.5, damage: 1.8, cooldownReduction: 1.2 },
   },
   {
     id: 18,
-    name: "Holy Knight",
-    baseBuff: {
-      strengthBuff: 1.75,
-      swordBuff: 1.75,
-      abilityBuff: 1.75,
-    },
+    name: "Dark King",
+    baseBuff: { maxHealth: 1.6, damage: 1.8, cooldownReduction: 1.2 },
   },
   {
     id: 19,
-    name: "Gorosei",
-    baseBuff: {
-      strengthBuff: 1.65,
-      swordBuff: 1.65,
-      abilityBuff: 1.65,
-    },
+    name: "Holy Knight",
+    baseBuff: { maxHealth: 1.65, damage: 1.75, cooldownReduction: 1.2 },
   },
   {
     id: 20,
-    name: "World King",
-    baseBuff: {
-      strengthBuff: 2.3,
-      swordBuff: 2.3,
-      abilityBuff: 2.3,
-    },
+    name: "Gorosei",
+    baseBuff: { maxHealth: 1.85, damage: 1.65, cooldownReduction: 1.15 },
   },
   {
     id: 21,
-    name: "Celestial",
-    baseBuff: {
-      strengthBuff: 2.2,
-      swordBuff: 2.2,
-      abilityBuff: 2.2,
-    },
+    name: "World King",
+    baseBuff: { maxHealth: 1.6, damage: 2.3, cooldownReduction: 1.3 },
   },
   {
     id: 22,
-    name: "Empty Throne",
-    baseBuff: {
-      strengthBuff: 2,
-      swordBuff: 2,
-      abilityBuff: 2,
-    },
+    name: "Celestial",
+    baseBuff: { maxHealth: 1.65, damage: 2.2, cooldownReduction: 1.3 },
   },
   {
     id: 23,
-    name: "Sea Emperor",
-    baseBuff: {
-      strengthBuff: 2.1,
-      swordBuff: 2.1,
-      abilityBuff: 2.1,
-    },
+    name: "Empty Throne",
+    baseBuff: { maxHealth: 1.7, damage: 2, cooldownReduction: 1.3 },
   },
   {
     id: 24,
+    name: "Sea Emperor",
+    baseBuff: { maxHealth: 1.75, damage: 2.1, cooldownReduction: 1.3 },
+  },
+  {
+    id: 25,
     name: "Pirate King",
-    baseBuff: {
-      strengthBuff: 1.9,
-      swordBuff: 1.9,
-      abilityBuff: 1.9,
-    },
+    baseBuff: { maxHealth: 2, damage: 1.9, cooldownReduction: 1.25 },
   },
 ];

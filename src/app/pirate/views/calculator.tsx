@@ -1,66 +1,52 @@
 import { useState } from "react";
 import {
-  ranks,
-  accessoriesData,
-  passiveTraitsData,
-} from "../../verse/data/stat_related";
-import {
-  hakisData,
   racesData,
-  traitsData,
   clansData,
-  KillMilestonesData,
-  AbilityMilestonesData,
-  FistMilestonesData,
-  SwordMilestonesData,
+  traitsData,
+  aurasData,
+  avatarsData,
+  type buffs,
+  type BaseBuff,
 } from "../data/passive";
 import {
-  swordsData,
-  fruitsData,
-  fightingsData,
-  specsData,
-} from "../../verse/data/moves";
-import type { MoveSlot } from "../../verse/data/moves/types";
-const formatNumber = (num: number): string => {
-  const absNum = Math.abs(num);
-  if (absNum >= 1e12) {
-    return (num / 1e12).toFixed(2).replace(/\.00$/, "") + "T";
-  }
-  if (absNum >= 1e9) {
-    return (num / 1e9).toFixed(2).replace(/\.00$/, "") + "B";
-  }
-  if (absNum >= 1e6) {
-    return (num / 1e6).toFixed(2).replace(/\.00$/, "") + "M";
-  }
-  if (absNum >= 1e3) {
-    return (num / 1e3).toFixed(2).replace(/\.00$/, "") + "k";
-  }
-  return num.toFixed(2);
+  fistMoves,
+  fruitMoves,
+  swordMoves,
+  abilityMoves,
+  type Scale,
+} from "../data/move";
+
+const allMoves = [...fistMoves, ...fruitMoves, ...swordMoves, ...abilityMoves];
+
+const scaleConstants: Record<Scale, number> = {
+  fist: 0.6208273281,
+  sword: 1.5077960877,
+  ability: 1.9222079596,
 };
 
 const statTypes = [
   {
     key: "strength",
-    label: "Strength",
-    className: "custom-text-strength",
+    label: "Fist",
+    className: "text-red-500",
     emoji: "\u{1F4AA}",
   },
   {
     key: "defense",
     label: "Defense",
-    className: "custom-text-defense",
+    className: "text-green-500",
     emoji: "\u{1F6E1}\u{FE0F}",
   },
   {
     key: "sword",
     label: "Sword",
-    className: "custom-text-sword",
+    className: "text-blue-500",
     emoji: "\u{2694}\u{FE0F}",
   },
   {
-    key: "special",
-    label: "Special",
-    className: "custom-text-special",
+    key: "ability",
+    label: "Ability",
+    className: "text-purple-500",
     emoji: "\u{2728}",
   },
 ];
@@ -68,297 +54,277 @@ const statTypes = [
 const MAX_TOTAL_STATS = 24000;
 const MAX_SINGLE_STAT = 7500;
 
+const MILESTONE_TIERS = [5, 10, 15, 20, 25] as const;
+
+const MILESTONE_STATS: {
+  key: keyof BaseBuff;
+  label: string;
+  textColor: string;
+  activeColor: string;
+  inactiveColor: string;
+}[] = [
+  {
+    key: "damage",
+    label: "Damage",
+    textColor: "text-orange-500",
+    activeColor:
+      "bg-orange-500 hover:bg-orange-600 border-orange-500 text-white",
+    inactiveColor: "border-orange-500 text-orange-500 hover:bg-orange-500/20",
+  },
+  {
+    key: "abilityDamage",
+    label: "Ability Damage",
+    textColor: "text-purple-500",
+    activeColor:
+      "bg-purple-500 hover:bg-purple-600 border-purple-500 text-white",
+    inactiveColor: "border-purple-500 text-purple-500 hover:bg-purple-500/20",
+  },
+  {
+    key: "swordDamage",
+    label: "Sword Damage",
+    textColor: "text-blue-500",
+    activeColor: "bg-blue-500 hover:bg-blue-600 border-blue-500 text-white",
+    inactiveColor: "border-blue-500 text-blue-500 hover:bg-blue-500/20",
+  },
+  {
+    key: "fistDamage",
+    label: "Fist Damage",
+    textColor: "text-red-500",
+    activeColor: "bg-red-500 hover:bg-red-600 border-red-500 text-white",
+    inactiveColor: "border-red-500 text-red-500 hover:bg-red-500/20",
+  },
+  {
+    key: "maxHealth",
+    label: "Health",
+    textColor: "text-green-500",
+    activeColor: "bg-green-500 hover:bg-green-600 border-green-500 text-white",
+    inactiveColor: "border-green-500 text-green-500 hover:bg-green-500/20",
+  },
+  {
+    key: "cooldownReduction",
+    label: "Cooldown",
+    textColor: "text-amber-300",
+    activeColor: "bg-amber-400 hover:bg-amber-500 border-amber-400 text-white",
+    inactiveColor: "border-amber-400 text-amber-400 hover:bg-amber-400/20",
+  },
+];
+
+const milestoneSumPercent = (count: number) =>
+  MILESTONE_TIERS.slice(0, count).reduce((s, t) => s + t, 0);
+
+const overviewSections = [
+  {
+    section: "Offense",
+    color: "text-red-500",
+    items: [
+      { key: "damage", label: "Damage" },
+      { key: "lifesteal", label: "Lifesteal" },
+      { key: "fistDamage", label: "Fist Damage" },
+      { key: "swordDamage", label: "Sword Damage" },
+      { key: "abilityDamage", label: "Ability Damage" },
+      { key: "criticalDamage", label: "Critical Damage" },
+      { key: "criticalDamageChance", label: "Critical Damage Chance" },
+    ],
+  },
+  {
+    section: "Defense",
+    color: "text-green-500",
+    items: [
+      { key: "damageReduction", label: "Damage Reduction" },
+      { key: "maxHealth", label: "Max Health" },
+    ],
+  },
+  {
+    section: "Utility",
+    color: "text-yellow-500",
+    items: [
+      { key: "gems", label: "Gems" },
+      { key: "coins", label: "Coins" },
+      { key: "dropAmount", label: "Drop Amount" },
+      { key: "exp", label: "Exp" },
+      { key: "luck", label: "Luck" },
+      { key: "extraGeppoJumps", label: "Extra Geppo Jumps" },
+      { key: "walkSpeed", label: "Walk Speed" },
+      { key: "jumpHeight", label: "Jump Height" },
+      { key: "cooldownReduction", label: "Cooldown Reduction" },
+    ],
+  },
+];
+
+const formatBuff = (key: string, val: number) => {
+  if (key === "extraGeppoJumps") return `+${val}`;
+  return `+${Math.round((val - 1) * 100)}%`;
+};
+
+const labelForKey: Record<string, string> = Object.fromEntries(
+  overviewSections.flatMap((s) => s.items.map((i) => [i.key, i.label])),
+);
+
+type BuffPart = { stat: string; text: string };
+
+const buffPartsMultiplicative = (
+  buff: Record<string, number | undefined>,
+): BuffPart[] => {
+  const parts: BuffPart[] = [];
+  for (const [key, raw] of Object.entries(buff)) {
+    if (typeof raw !== "number") continue;
+    const label = labelForKey[key] ?? key;
+    if (key === "extraGeppoJumps") {
+      if (raw !== 0) parts.push({ stat: key, text: `+${raw} ${label}` });
+    } else {
+      const pct = Math.round((raw - 1) * 100);
+      if (pct !== 0) parts.push({ stat: key, text: `+${pct}% ${label}` });
+    }
+  }
+  return parts;
+};
+
+const buffPartsAdditive = (
+  add: Partial<Record<string, number>>,
+): BuffPart[] => {
+  const parts: BuffPart[] = [];
+  for (const [key, v] of Object.entries(add)) {
+    if (typeof v !== "number" || v === 0) continue;
+    const label = labelForKey[key] ?? key;
+    if (key === "extraGeppoJumps") {
+      parts.push({ stat: key, text: `+${v} ${label}` });
+    } else {
+      parts.push({ stat: key, text: `+${Math.round(v * 100)}% ${label}` });
+    }
+  }
+  return parts;
+};
+
 const Calculator = () => {
   const [baseStats, setBaseStats] = useState({
     strength: 0,
     defense: 0,
     sword: 0,
-    special: 0,
+    ability: 0,
   });
 
-  const [ghostStats, setGhostStats] = useState({
-    strength: 0,
-    defense: 0,
-    sword: 0,
-    special: 0,
-  });
-
-  const [accessory, setAccessory] = useState({
-    selectedId: 0,
-    enhanceLevel: 0,
-  });
-
-  const [trait, setTrait] = useState({
-    passiveId: 0,
-  });
-
-  const [hakiId, setHakiId] = useState(0);
   const [raceId, setRaceId] = useState(0);
-  const [traitId, setTraitId] = useState(0);
   const [clanId, setClanId] = useState(0);
-  const [killMilestoneId, setKillMilestoneId] = useState(0);
-  const [abilityMilestoneId, setAbilityMilestoneId] = useState(0);
-  const [fistMilestoneId, setFistMilestoneId] = useState(0);
-  const [swordMilestoneId, setSwordMilestoneId] = useState(0);
+  const [traitId, setTraitId] = useState(0);
+  const [auraId, setAuraId] = useState(0);
+  const [avatarId, setAvatarId] = useState(0);
+  const [avatarLevel, setAvatarLevel] = useState(1);
+  const [moveId, setMoveId] = useState(0);
+  const [hakiEnabled, setHakiEnabled] = useState(false);
+  const [hakiLevel, setHakiLevel] = useState(0);
 
-  const [moveType, setMoveType] = useState<
-    "sword" | "fruit" | "fighting" | "spec"
-  >("sword");
-  const [moveState, setMoveState] = useState({
-    selectedId: 0,
-    enhanceLevel: 0,
-    blessing: false,
-  });
+  const [milestones, setMilestones] = useState<Record<string, number>>(
+    Object.fromEntries(MILESTONE_STATS.map((s) => [s.key, 0])),
+  );
 
-  const [passiveLevels, setPassiveLevels] = useState({
-    haki: 0,
-    race: 0,
-    trait: 0,
-    killMilestone: 0,
-    abilityMilestone: 0,
-    fistMilestone: 0,
-    swordMilestone: 0,
-  });
+  const setMilestoneTier = (statKey: string, tier: number) => {
+    setMilestones((prev) => ({
+      ...prev,
+      [statKey]: prev[statKey] === tier ? tier - 1 : tier,
+    }));
+  };
 
-  const selectedAccessory =
-    accessoriesData.find((acc) => acc.id === accessory.selectedId) ||
-    accessoriesData[0];
-
-  const selectedPassiveTrait =
-    passiveTraitsData.find((p) => p.id === trait.passiveId) ||
-    passiveTraitsData[0];
-
-  const selectedHaki = hakisData.find((h) => h.id === hakiId) || hakisData[0];
   const selectedRace = racesData.find((r) => r.id === raceId) || racesData[0];
-  const selectedTrait = traitsData.find((t) => t.id === traitId) || traitsData[0];
   const selectedClan = clansData.find((c) => c.id === clanId) || clansData[0];
-  const selectedKillMilestone = KillMilestonesData.find((k) => k.id === killMilestoneId) || KillMilestonesData[0];
-  const selectedAbilityMilestone = AbilityMilestonesData.find((a) => a.id === abilityMilestoneId) || AbilityMilestonesData[0];
-  const selectedFistMilestone = FistMilestonesData.find((f) => f.id === fistMilestoneId) || FistMilestonesData[0];
-  const selectedSwordMilestone = SwordMilestonesData.find((s) => s.id === swordMilestoneId) || SwordMilestonesData[0];
+  const selectedTrait =
+    traitsData.find((t) => t.id === traitId) || traitsData[0];
+  const selectedAura = aurasData.find((a) => a.id === auraId) || aurasData[0];
+  const selectedAvatar =
+    avatarsData.find((a) => a.id === avatarId) || avatarsData[0];
 
-  const getMoveData = () => {
-    switch (moveType) {
-      case "sword":
-        return swordsData;
-      case "fruit":
-        return fruitsData;
-      case "fighting":
-        return fightingsData;
-      case "spec":
-        return specsData;
+  const clampedLevel = Math.min(
+    Math.max(1, avatarLevel),
+    selectedAvatar.maxLevel,
+  );
+
+  const avatarAdd: Partial<Record<keyof BaseBuff, number>> = {};
+  for (const b of selectedAvatar.buffs) {
+    const v = b.base + b.perLevel * clampedLevel;
+    avatarAdd[b.stat] = (avatarAdd[b.stat] ?? 0) + v;
+  }
+
+  const milestoneAdd: Partial<Record<keyof BaseBuff, number>> = {};
+  for (const { key } of MILESTONE_STATS) {
+    const count = milestones[key] ?? 0;
+    if (count > 0) milestoneAdd[key] = milestoneSumPercent(count) / 100;
+  }
+
+  const auraAdd = selectedAura.baseBuff as Partial<
+    Record<keyof BaseBuff, number>
+  >;
+
+  const totalAdditive: Partial<Record<keyof BaseBuff, number>> = {};
+  for (const src of [avatarAdd, milestoneAdd, auraAdd]) {
+    for (const [k, v] of Object.entries(src)) {
+      const key = k as keyof BaseBuff;
+      totalAdditive[key] = (totalAdditive[key] ?? 0) + (v ?? 0);
     }
-  };
-  const currentMoveData = getMoveData();
-  const selectedMove =
-    currentMoveData.find((m) => m.id === moveState.selectedId) ||
-    currentMoveData[0];
+  }
 
-  // Get the stat key based on move type
-  const getMoveStatKey = (): "strength" | "sword" | "special" => {
-    switch (moveType) {
-      case "fighting":
-        return "strength";
-      case "sword":
-        return "sword";
-      case "fruit":
-      case "spec":
-        return "special";
-    }
-  };
-  const calculateHitDamage = (
-    damage: number,
-    multiplier = 1,
-    enhanceMult = 2.5,
-    statKeyOverride?: "strength" | "sword" | "special",
-  ) => {
-    const statKey = statKeyOverride || getMoveStatKey();
-    const baseStat = baseStats[statKey];
-    const ghostStat = ghostStats[statKey];
-    const accessoryStat =
-      (selectedAccessory[statKey] || 0) +
-      (selectedAccessory.increment
-        ? selectedAccessory.increment * accessory.enhanceLevel
-        : 0);
+  const passives = [selectedRace, selectedClan, selectedTrait];
 
-    const totalStat =
-      baseStat > 0 ? baseStat + ghostStat + accessoryStat : 0;
-
-    const damageMultiplier = getStatMultiplier(statKey);
-
-    // Apply sword enhance to base damage
-    let baseWithEnhance = damage * multiplier;
-    if (moveType === "sword") {
-      baseWithEnhance += moveState.enhanceLevel * enhanceMult;
-    }
-
-    let finalDamage =
-      baseWithEnhance * (1 + totalStat / 75) * damageMultiplier;
-
-    // Apply blessing
-    if (moveType !== "fruit" && moveState.blessing) {
-      finalDamage *= 2.5;
-    }
-
-    return finalDamage;
+  const pickBestId = (
+    data: buffs[],
+    key: keyof BaseBuff,
+    additive = false,
+  ): number => {
+    const isAdditive = additive || key === "extraGeppoJumps";
+    const fallback = isAdditive ? 0 : 1;
+    return data.reduce((best, cur) => {
+      const cv = cur.baseBuff[key] ?? fallback;
+      const bv = best.baseBuff[key] ?? fallback;
+      return cv > bv ? cur : best;
+    }).id;
   };
 
-  const renderMoveDamage = (input: number | MoveSlot | undefined) => {
-    if (input === undefined) return null;
-
-    const getScaleColor = (scale?: "strength" | "sword" | "special") => {
-      const type = scale || getMoveStatKey();
-      switch (type) {
-        case "strength":
-          return "#ff0000";
-        case "sword":
-          return "#ffff7f";
-        case "special":
-          return "#ff00bf";
-        default:
-          return "#ffffff";
-      }
-    };
-
-    const getScaleGradient = (scales: Set<"strength" | "sword" | "special">) => {
-      const scaleArray = Array.from(scales);
-      if (scaleArray.length <= 1) return null;
-
-      const gradientColors = scaleArray
-        .map((s) => getScaleColor(s))
-        .join(", ");
-      return `linear-gradient(90deg, ${gradientColors})`;
-    };
-
-    const defaultUpgrade = typeof input === "object" ? input.upgrade ?? 2.5 : 2.5;
-    const defaultScaleType =
-      typeof input === "object" ? input.scaleType : undefined;
-
-    // Determine the color class based on scaleType or default moveType
-    const getScaleColorClass = (scale?: "strength" | "sword" | "special") => {
-      const type = scale || getMoveStatKey();
-      return `custom-text-${type}`;
-    };
-
-    if (typeof input === "number") {
-      return (
-        <span className={`${getScaleColorClass()} font-semibold`}>
-          {formatNumber(calculateHitDamage(input, 1, 2.5))}
-        </span>
-      );
-    }
-
-    if (!input.hits || input.hits.length === 0) {
-      return <span className="font-semibold">{input.desc || "0"}</span>;
-    }
-
-    const totalDamage = input.hits.reduce((sum, hit) => {
-      const hitUpgrade = hit.upgrade ?? defaultUpgrade;
-      const hitScaleType = hit.scaleType ?? defaultScaleType;
-      return (
-        sum +
-        calculateHitDamage(
-          hit.damage,
-          hit.multiplier || 1,
-          hitUpgrade,
-          hitScaleType,
-        )
-      );
-    }, 0);
-
-    const firstHitUpgrade = input.hits[0].upgrade ?? defaultUpgrade;
-    const firstHitScaleType = input.hits[0].scaleType ?? defaultScaleType;
-    const firstHit = calculateHitDamage(
-      input.hits[0].damage,
-      input.hits[0].multiplier || 1,
-      firstHitUpgrade,
-      firstHitScaleType,
-    );
-
-    const uniqueScales = new Set<"strength" | "sword" | "special">();
-    if (typeof input === "object" && input.hits) {
-      input.hits.forEach((hit) => {
-        uniqueScales.add(hit.scaleType || defaultScaleType || getMoveStatKey());
-      });
-    } else {
-      uniqueScales.add(defaultScaleType || getMoveStatKey());
-    }
-
-    const gradient = getScaleGradient(uniqueScales);
-
-    const firstHitColorClass = getScaleColorClass(firstHitScaleType);
-    const allSameScale = input.hits.every(
-      (hit) =>
-        (hit.scaleType ?? defaultScaleType) ===
-        (input.hits[0].scaleType ?? defaultScaleType),
-    );
-    const totalColorClass = allSameScale
-      ? firstHitColorClass
-      : getScaleColorClass(defaultScaleType);
-
-    const lineStyle = gradient
-      ? {
-          backgroundImage: gradient,
-          backgroundClip: "text",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          display: "inline-block",
+  const pickBestAvatarId = (key: keyof BaseBuff): number => {
+    let bestId = avatarsData[0].id;
+    let bestValue = -Infinity;
+    for (const a of avatarsData) {
+      let value = 0;
+      for (const b of a.buffs) {
+        if (b.stat === key) {
+          value += b.base + b.perLevel * a.maxLevel;
         }
-      : {};
-
-    if (input.hits.length === 1) {
-      return (
-        <span className={`${firstHitColorClass} font-semibold`} style={lineStyle}>
-          {formatNumber(totalDamage)}
-        </span>
-      );
+      }
+      if (value > bestValue) {
+        bestValue = value;
+        bestId = a.id;
+      }
     }
-
-    return (
-      <span className="font-semibold" style={lineStyle}>
-        <span className={gradient ? "" : firstHitColorClass}>
-          {formatNumber(firstHit)}
-        </span>
-        {" - "}
-        <span className={gradient ? "" : totalColorClass}>
-          {formatNumber(totalDamage)}
-        </span>
-        {" | "}
-        {input.hits.length} hits
-      </span>
-    );
+    return bestId;
   };
 
-  const baseDmgMult =
-    (selectedPassiveTrait.dmgMult || 1);
-
-  const getPassiveMult = (
-    selectedPassive: any,
-    level: number,
-    statKey: string
-  ) => {
-    if (!selectedPassive) return 1;
-    const buffKey = statKey === "special" ? "abilityBuff" : `${statKey}Buff`;
-    let base = selectedPassive.baseBuff?.[buffKey] || 1;
-    
-    const upgrade = selectedPassive.upgradeBuff;
-    if (upgrade?.upgradePerLevel && level > 0) {
-      base += upgrade.upgradePerLevel * level;
+  const applyBestForStat = (key: keyof BaseBuff) => {
+    setRaceId(pickBestId(racesData, key));
+    setClanId(pickBestId(clansData, key));
+    setTraitId(pickBestId(traitsData, key));
+    setAuraId(pickBestId(aurasData, key, true));
+    const bestAvatarId = pickBestAvatarId(key);
+    setAvatarId(bestAvatarId);
+    const bestAvatar =
+      avatarsData.find((a) => a.id === bestAvatarId) || avatarsData[0];
+    setAvatarLevel(bestAvatar.maxLevel);
+    if (MILESTONE_STATS.some((s) => s.key === key)) {
+      setMilestones((prev) => ({ ...prev, [key]: MILESTONE_TIERS.length }));
     }
-    return base;
   };
 
-  const getStatMultiplier = (statKey: string) => {
-    const hakiMult = getPassiveMult(selectedHaki, passiveLevels.haki, statKey);
-    const raceMult = getPassiveMult(selectedRace, passiveLevels.race, statKey);
-    const traitMult = getPassiveMult(selectedTrait, passiveLevels.trait, statKey);
-    const clanMult = getPassiveMult(selectedClan, 0, statKey);
-    const killMult = getPassiveMult(selectedKillMilestone, passiveLevels.killMilestone, statKey);
-    const abilityMult = getPassiveMult(selectedAbilityMilestone, passiveLevels.abilityMilestone, statKey);
-    const fistMult = getPassiveMult(selectedFistMilestone, passiveLevels.fistMilestone, statKey);
-    const swordMult = getPassiveMult(selectedSwordMilestone, passiveLevels.swordMilestone, statKey);
-
-    return baseDmgMult * hakiMult * raceMult * traitMult * clanMult * killMult * abilityMult * fistMult * swordMult;
+  const combinedBuff = (key: string) => {
+    const k = key as keyof BaseBuff;
+    const add = totalAdditive[k] ?? 0;
+    if (key === "extraGeppoJumps") {
+      const sum = passives.reduce((s, p) => {
+        const v = p.baseBuff?.[k];
+        return s + (typeof v === "number" ? v : 0);
+      }, 0);
+      return sum + add;
+    }
+    const product = passives.reduce((prod, p) => {
+      const v = p.baseBuff?.[k];
+      return prod * (typeof v === "number" ? v : 1);
+    }, 1);
+    return product + add;
   };
 
   const totalBaseStats = Object.values(baseStats).reduce(
@@ -392,249 +358,455 @@ const Calculator = () => {
     }));
   };
 
-  const handleBestBuff = (statKey: "strength" | "sword" | "special") => {
-    const buffKey = (statKey === "special" ? "abilityBuff" : `${statKey}Buff`) as
-      | "strengthBuff"
-      | "swordBuff"
-      | "abilityBuff";
-
-    // Find best passive buffs
-    const bestHaki = hakisData.reduce((best, current) =>
-      (current.baseBuff?.[buffKey] || 1) > (best.baseBuff?.[buffKey] || 1) ? current : best,
-    );
-    const bestRace = racesData.reduce((best, current) =>
-      (current.baseBuff?.[buffKey] || 1) > (best.baseBuff?.[buffKey] || 1) ? current : best,
-    );
-    const bestTrait = traitsData.reduce((best, current) =>
-      (current.baseBuff?.[buffKey] || 1) > (best.baseBuff?.[buffKey] || 1) ? current : best,
-    );
-    const bestClan = clansData.reduce((best, current) =>
-      (current.baseBuff?.[buffKey] || 1) > (best.baseBuff?.[buffKey] || 1) ? current : best,
-    );
-    const bestKillMilestone = KillMilestonesData.reduce((best, current) =>
-      (current.baseBuff?.[buffKey] || 1) > (best.baseBuff?.[buffKey] || 1) ? current : best,
-    );
-    const bestAbilityMilestone = AbilityMilestonesData.reduce((best, current) =>
-      (current.baseBuff?.[buffKey] || 1) > (best.baseBuff?.[buffKey] || 1) ? current : best,
-    );
-    const bestFistMilestone = FistMilestonesData.reduce((best, current) =>
-      (current.baseBuff?.[buffKey] || 1) > (best.baseBuff?.[buffKey] || 1) ? current : best,
-    );
-    const bestSwordMilestone = SwordMilestonesData.reduce((best, current) =>
-      (current.baseBuff?.[buffKey] || 1) > (best.baseBuff?.[buffKey] || 1) ? current : best,
-    );
-
-    // Find best accessory for this stat
-    const bestAccessory = accessoriesData.reduce((best, current) =>
-      (current[statKey] || 0) > (best[statKey] || 0) ? current : best,
-    );
-
-    // Find best passive trait (highest dmgMult)
-    const bestPassiveTrait = passiveTraitsData.reduce((best, current) =>
-      (current.dmgMult || 1) > (best.dmgMult || 1) ? current : best,
-    );
-
-    // Find best rank (highest value)
-    const bestRank = ranks.reduce((best, current) =>
-      current.value > best.value ? current : best,
-    );
-
-    // Set all passive buffs
-    setHakiId(bestHaki.id);
-    setRaceId(bestRace.id);
-    setTraitId(bestTrait.id);
-    setClanId(bestClan.id);
-    setKillMilestoneId(bestKillMilestone.id);
-    setAbilityMilestoneId(bestAbilityMilestone.id);
-    setFistMilestoneId(bestFistMilestone.id);
-    setSwordMilestoneId(bestSwordMilestone.id);
-
-    setPassiveLevels({
-      haki: bestHaki.upgradeBuff?.maxLevel || 0,
-      race: bestRace.upgradeBuff?.maxLevel || 0,
-      trait: bestTrait.upgradeBuff?.maxLevel || 0,
-      killMilestone: bestKillMilestone.upgradeBuff?.maxLevel || 0,
-      abilityMilestone: bestAbilityMilestone.upgradeBuff?.maxLevel || 0,
-      fistMilestone: bestFistMilestone.upgradeBuff?.maxLevel || 0,
-      swordMilestone: bestSwordMilestone.upgradeBuff?.maxLevel || 0,
-    });
-
-    // Set accessory with max enhance
-    setAccessory({ selectedId: bestAccessory.id, enhanceLevel: 10 });
-
-    // Set passive trait
-    setTrait({ passiveId: bestPassiveTrait.id });
-
-    // Set ghost rank for this stat
-    setGhostStats((prev) => ({ ...prev, [statKey]: bestRank.value }));
-
-    // Max the base stat
-    handleMaxStat(statKey);
-  };
-
-  const renderPassiveSelector = (
-    label: string,
-    selectedItem: any,
-    selectedValue: number,
-    onSelect: (val: number) => void,
-    levelValue: number,
-    onLevelChange: (val: number) => void,
-    dataList: any[]
-  ) => {
-    const strengthMult = getPassiveMult(selectedItem, levelValue, "strength");
-    const swordMult = getPassiveMult(selectedItem, levelValue, "sword");
-    const abilityMult = getPassiveMult(selectedItem, levelValue, "special");
-
-    return (
-      <div className="mb-4">
-        <label className="label">
-          <span className="font-bold flex items-center gap-2 flex-wrap">
-            {label}
-            {strengthMult > 1 && (
-              <span className="custom-text-strength">
-                💪 {parseFloat(strengthMult.toFixed(2))}x
-              </span>
-            )}
-            {swordMult > 1 && (
-              <span className="custom-text-sword">
-                ⚔️ {parseFloat(swordMult.toFixed(2))}x
-              </span>
-            )}
-            {abilityMult > 1 && (
-              <span className="custom-text-special">
-                ✨ {parseFloat(abilityMult.toFixed(2))}x
-              </span>
-            )}
-          </span>
-        </label>
-        <select
-          className="select select-bordered w-full"
-          value={selectedValue}
-          onChange={(e) => onSelect(Number(e.target.value))}
-        >
-          {dataList.map((item) => (
-            <option key={item.id} value={item.id}>
-              {item.name}
-            </option>
-          ))}
-        </select>
-        
-        {selectedItem?.upgradeBuff?.maxLevel && (
-          <div className="flex items-center gap-2 mt-2">
-            <span className="text-sm font-bold w-12 text-right">Lv:</span>
-            <input
-              type="range"
-              min="0"
-              max={selectedItem.upgradeBuff.maxLevel}
-              value={levelValue}
-              onChange={(e) => onLevelChange(Number(e.target.value))}
-              className="range range-xs range-primary flex-1"
-            />
-            <input
-              type="number"
-              min="0"
-              max={selectedItem.upgradeBuff.maxLevel}
-              value={levelValue}
-              onChange={(e) => onLevelChange(Number(e.target.value))}
-              className="input input-bordered input-xs w-16 text-center"
-            />
-          </div>
-        )}
-      </div>
-    );
-  };
-
   return (
-    <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-6">
-      {/* Left Column - Stats, Accessory, Trait */}
-      <div className="flex-1">
-        <fieldset className="fieldset bg-base-200 border-base-300 rounded-box border p-6">
-          <legend className="fieldset-legend font-bold">Base Stats</legend>
+    <div className="w-full max-w-[90rem] mx-auto flex flex-col gap-6">
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Left Column - Stats, Race Selection */}
+        <div className="flex-1">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <fieldset className="fieldset bg-base-200 border-base-300 rounded-box border p-6">
+              <legend className="fieldset-legend font-bold">Base Stats</legend>
 
-          {statTypes.map(({ key, label, className, emoji }) => {
-            const statKey = key as keyof typeof baseStats;
-            const value = baseStats[statKey];
-            const rankValue = ghostStats[statKey];
-            const accessoryBaseStat = selectedAccessory[statKey] || 0;
-            const accessoryEnhancedStat =
-              accessoryBaseStat +
-              (selectedAccessory.increment
-                ? selectedAccessory.increment * accessory.enhanceLevel
-                : 0);
+              {statTypes.map(({ key, label, className, emoji }) => {
+                const statKey = key as keyof typeof baseStats;
+                const value = baseStats[statKey];
 
-            return (
-              <div key={statKey} className="flex items-center gap-3 mb-4">
-                <div
-                  className={`flex items-center gap-2 font-bold ${className}`}
-                >
-                  <span className="text-xl">{emoji}</span>
-                  <span>{label}</span>
+                return (
+                  <div key={statKey} className="flex items-center gap-2 mb-3">
+                    <div
+                      className={`flex items-center gap-1 font-bold flex-1 min-w-0 ${className}`}
+                    >
+                      <span className="text-lg">{emoji}</span>
+                      <span>{label}</span>
+                    </div>
+
+                    <input
+                      type="number"
+                      min="0"
+                      value={value}
+                      onChange={(e) =>
+                        handleStatChange(statKey, Number(e.target.value) || 0)
+                      }
+                      className="input input-bordered input-sm w-20 text-center shrink-0"
+                    />
+
+                    <button
+                      type="button"
+                      className="btn btn-xs btn-outline shrink-0"
+                      onClick={() =>
+                        setBaseStats((prev) => ({ ...prev, [statKey]: 0 }))
+                      }
+                      disabled={value === 0}
+                    >
+                      Min
+                    </button>
+
+                    <button
+                      type="button"
+                      className="btn btn-xs btn-outline shrink-0"
+                      onClick={() => handleMaxStat(statKey)}
+                      disabled={
+                        remainingStats === 0 || value === MAX_SINGLE_STAT
+                      }
+                    >
+                      Max
+                    </button>
+                  </div>
+                );
+              })}
+            </fieldset>
+
+            <fieldset className="fieldset bg-base-200 border-base-300 rounded-box border p-6">
+              <legend className="fieldset-legend font-bold">
+                Passive Selection
+              </legend>
+              <div className="flex flex-col gap-3">
+                <div className="grid grid-cols-[5rem_minmax(0,1fr)] gap-3 items-center">
+                  <label className="font-semibold">Race</label>
+                  <select
+                    className="select select-bordered select-sm w-full"
+                    value={raceId}
+                    onChange={(e) => setRaceId(Number(e.target.value))}
+                  >
+                    {racesData.map((r) => (
+                      <option key={r.id} value={r.id}>
+                        {r.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
-                <input
-                  type="number"
-                  min="0"
-                  value={value}
-                  onChange={(e) =>
-                    handleStatChange(statKey, Number(e.target.value) || 0)
-                  }
-                  className="input input-bordered w-28 text-center"
-                />
-
-                <button
-                  type="button"
-                  className="btn btn-sm btn-outline"
-                  onClick={() =>
-                    setBaseStats((prev) => ({ ...prev, [statKey]: 0 }))
-                  }
-                  disabled={value === 0}
-                >
-                  Min
-                </button>
-
-                <button
-                  type="button"
-                  className="btn btn-sm btn-outline"
-                  onClick={() => handleMaxStat(statKey)}
-                  disabled={remainingStats === 0 || value === MAX_SINGLE_STAT}
-                >
-                  Max
-                </button>
-
-                {statKey !== "defense" && (
-                  <button
-                    type="button"
-                    className="btn btn-sm btn-primary"
-                    onClick={() =>
-                      handleBestBuff(
-                        statKey as "strength" | "sword" | "special",
-                      )
-                    }
+                <div className="grid grid-cols-[5rem_minmax(0,1fr)] gap-3 items-center">
+                  <label className="font-semibold">Clan</label>
+                  <select
+                    className="select select-bordered select-sm w-full"
+                    value={clanId}
+                    onChange={(e) => setClanId(Number(e.target.value))}
                   >
-                    Best
-                  </button>
+                    {clansData.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="grid grid-cols-[5rem_minmax(0,1fr)] gap-3 items-center">
+                  <label className="font-semibold">Trait</label>
+                  <select
+                    className="select select-bordered select-sm w-full"
+                    value={traitId}
+                    onChange={(e) => setTraitId(Number(e.target.value))}
+                  >
+                    {traitsData.map((t) => (
+                      <option key={t.id} value={t.id}>
+                        {t.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="grid grid-cols-[5rem_minmax(0,1fr)] gap-3 items-center">
+                  <label className="font-semibold">Aura</label>
+                  <select
+                    className="select select-bordered select-sm w-full"
+                    value={auraId}
+                    onChange={(e) => setAuraId(Number(e.target.value))}
+                  >
+                    {aurasData.map((a) => (
+                      <option key={a.id} value={a.id}>
+                        {a.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="grid grid-cols-[5rem_minmax(0,1fr)] gap-3 items-center">
+                  <label className="font-semibold">Avatar</label>
+                  <div className="flex items-center gap-2 min-w-0">
+                    <select
+                      className="select select-bordered select-sm flex-1 min-w-0"
+                      value={avatarId}
+                      onChange={(e) => {
+                        const newId = Number(e.target.value);
+                        setAvatarId(newId);
+                        const next =
+                          avatarsData.find((a) => a.id === newId) ||
+                          avatarsData[0];
+                        setAvatarLevel((lvl) => Math.min(lvl, next.maxLevel));
+                      }}
+                    >
+                      {avatarsData.map((a) => (
+                        <option key={a.id} value={a.id}>
+                          {a.name}
+                        </option>
+                      ))}
+                    </select>
+                    <input
+                      type="number"
+                      min={1}
+                      max={selectedAvatar.maxLevel}
+                      value={clampedLevel}
+                      onChange={(e) =>
+                        setAvatarLevel(
+                          Math.min(
+                            selectedAvatar.maxLevel,
+                            Math.max(1, Number(e.target.value) || 1),
+                          ),
+                        )
+                      }
+                      title="Avatar level"
+                      className="input input-bordered input-sm w-16 text-center shrink-0"
+                    />
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+
+          <fieldset className="fieldset bg-base-200 border-base-300 rounded-box border p-6 mt-6">
+            <legend className="fieldset-legend font-bold">Milestones</legend>
+            <div className="grid grid-cols-[auto_repeat(5,minmax(0,1fr))] gap-2 items-center">
+              {MILESTONE_STATS.map(
+                ({ key, label, textColor, activeColor, inactiveColor }) => {
+                  const unlockedCount = milestones[key] ?? 0;
+                  return (
+                    <div key={key} className="contents">
+                      <span
+                        className={`font-semibold text-sm pr-2 ${textColor}`}
+                      >
+                        {label}
+                      </span>
+                      {MILESTONE_TIERS.map((value, i) => {
+                        const tier = i + 1;
+                        const unlocked = unlockedCount >= tier;
+                        return (
+                          <button
+                            key={tier}
+                            type="button"
+                            onClick={() => setMilestoneTier(key, tier)}
+                            title={`+${value}% ${label} (tier ${tier})`}
+                            className={`btn btn-xs border ${unlocked ? activeColor : inactiveColor}`}
+                          >
+                            +{value}%
+                          </button>
+                        );
+                      })}
+                    </div>
+                  );
+                },
+              )}
+            </div>
+          </fieldset>
+        </div>
+
+        {/* Right Column - Buffs Breakdown + Stats Overview */}
+        <div className="flex flex-col lg:flex-row gap-6">
+          <fieldset className="fieldset bg-base-200 border-base-300 rounded-box border p-6 lg:w-72">
+            <legend className="fieldset-legend font-bold">
+              Buffs Breakdown
+            </legend>
+            <div className="flex flex-col gap-3 text-sm">
+              {(
+                [
+                  {
+                    type: "Race",
+                    name: selectedRace.name,
+                    parts: buffPartsMultiplicative(selectedRace.baseBuff),
+                  },
+                  {
+                    type: "Clan",
+                    name: selectedClan.name,
+                    parts: buffPartsMultiplicative(selectedClan.baseBuff),
+                  },
+                  {
+                    type: "Trait",
+                    name: selectedTrait.name,
+                    parts: buffPartsMultiplicative(selectedTrait.baseBuff),
+                  },
+                  {
+                    type: "Aura",
+                    name: selectedAura.name,
+                    parts: buffPartsAdditive(selectedAura.baseBuff),
+                  },
+                  {
+                    type: "Avatar",
+                    name: `${selectedAvatar.name}${selectedAvatar.id !== 0 ? ` @ Lvl ${clampedLevel}` : ""}`,
+                    parts: buffPartsAdditive(avatarAdd),
+                  },
+                  {
+                    type: "Milestones",
+                    name: "",
+                    parts: buffPartsAdditive(milestoneAdd),
+                  },
+                ] as const
+              ).map(({ type, name, parts }) => (
+                <div key={type} className="flex flex-col gap-1">
+                  <div className="font-semibold text-white">
+                    {type}
+                    {name && `: ${name}`}
+                  </div>
+                  {parts.length === 0 ? (
+                    <div className="text-xs text-base-content/40 pl-1">
+                      No buffs
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs pl-1">
+                      {parts.map(({ stat, text }) => (
+                        <span key={stat} className="text-success">
+                          {text}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </fieldset>
+
+          <fieldset className="fieldset bg-base-200 border-base-300 rounded-box border p-6 lg:w-72">
+            <legend className="fieldset-legend font-bold">
+              Stats Overview
+            </legend>
+            <div className="flex flex-col gap-1 text-sm font-semibold">
+              {overviewSections.map(({ section, color, items }, sectionIdx) => (
+                <div key={section} className="flex flex-col gap-1">
+                  <span
+                    className={`${color} font-bold text-base ${sectionIdx > 0 ? "mt-3" : ""}`}
+                  >
+                    {section}
+                  </span>
+                  {items.map(({ key, label }) => {
+                    const val = combinedBuff(key);
+                    const isDefault =
+                      key === "extraGeppoJumps" ? val === 0 : val === 1;
+                    return (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => applyBestForStat(key as keyof BaseBuff)}
+                        title={`Click to maximize ${label}`}
+                        className="flex justify-between items-center w-full text-left rounded px-1 -mx-1 hover:bg-base-300 cursor-pointer"
+                      >
+                        <span className="text-white">{label}</span>
+                        <span
+                          className={
+                            isDefault ? "text-base-content/30" : "text-success"
+                          }
+                        >
+                          {formatBuff(key, val)}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          </fieldset>
+        </div>
+      </div>
+
+      <fieldset className="fieldset bg-base-200 border-base-300 rounded-box border p-6">
+        <legend className="fieldset-legend font-bold">Move Damage</legend>
+        {(() => {
+          const selectedMove = allMoves[moveId] || allMoves[0];
+          const scaleToBaseStat: Record<Scale, keyof typeof baseStats> = {
+            fist: "strength",
+            sword: "sword",
+            ability: "ability",
+          };
+          const scaleToBuffKey: Record<Scale, keyof BaseBuff> = {
+            fist: "fistDamage",
+            sword: "swordDamage",
+            ability: "abilityDamage",
+          };
+          const damageMult = combinedBuff("damage");
+          const critMult = combinedBuff("criticalDamage");
+          const hakiMult = hakiEnabled ? 1.1 + 0.01 * hakiLevel : 1;
+          const computeDmg = (
+            base: number,
+            scale: Scale,
+            statValue: number,
+          ) => {
+            const scaleMult = combinedBuff(scaleToBuffKey[scale]);
+            const buffMult = damageMult * scaleMult * hakiMult;
+            if (statValue === 0) return base * buffMult;
+            const constant = scaleConstants[scale];
+            return base * (statValue * constant) * buffMult;
+          };
+          const rows = [selectedMove.M1, ...selectedMove.abilities];
+          return (
+            <>
+              <div className="flex flex-wrap items-center gap-3 mb-4">
+                <label className="font-semibold">Move</label>
+                <select
+                  className="select select-bordered select-sm max-w-xs"
+                  value={moveId}
+                  onChange={(e) => setMoveId(Number(e.target.value))}
+                >
+                  {allMoves.map((m, i) => (
+                    <option key={i} value={i}>
+                      {m.name}
+                    </option>
+                  ))}
+                </select>
+                <label className="flex items-center gap-2 cursor-pointer ml-2">
+                  <input
+                    type="checkbox"
+                    className="checkbox checkbox-sm"
+                    checked={hakiEnabled}
+                    onChange={(e) => setHakiEnabled(e.target.checked)}
+                  />
+                  <span className="font-semibold">Haki</span>
+                </label>
+                {hakiEnabled && (
+                  <>
+                    <label className="text-sm font-semibold">Lvl</label>
+                    <input
+                      type="number"
+                      min={0}
+                      max={25}
+                      value={hakiLevel}
+                      onChange={(e) =>
+                        setHakiLevel(
+                          Math.min(
+                            25,
+                            Math.max(0, Number(e.target.value) || 0),
+                          ),
+                        )
+                      }
+                      className="input input-bordered input-sm w-16 text-center"
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-xs btn-outline"
+                      onClick={() => setHakiLevel(25)}
+                      disabled={hakiLevel === 25}
+                    >
+                      Max
+                    </button>
+                    <span className="text-xs text-base-content/60">
+                      ×{hakiMult.toFixed(2)}
+                    </span>
+                  </>
                 )}
               </div>
-            );
-          })}
-
-        </fieldset>
-      </div>
-
-      {/* Right Column - Passives */}
-      <div className="lg:w-80">
-        <fieldset className="fieldset bg-base-200 border-base-300 rounded-box border p-6">
-          <legend className="fieldset-legend font-bold">Passives</legend>
-          {renderPassiveSelector("Haki", selectedHaki, hakiId, setHakiId, passiveLevels.haki, (val) => setPassiveLevels(prev => ({...prev, haki: val})), hakisData)}
-          {renderPassiveSelector("Race", selectedRace, raceId, setRaceId, passiveLevels.race, (val) => setPassiveLevels(prev => ({...prev, race: val})), racesData)}
-          {renderPassiveSelector("Trait", selectedTrait, traitId, setTraitId, passiveLevels.trait, (val) => setPassiveLevels(prev => ({...prev, trait: val})), traitsData)}
-          {renderPassiveSelector("Clan", selectedClan, clanId, setClanId, 0, () => {}, clansData)}
-          {renderPassiveSelector("Kill Milestone", selectedKillMilestone, killMilestoneId, setKillMilestoneId, passiveLevels.killMilestone, (val) => setPassiveLevels(prev => ({...prev, killMilestone: val})), KillMilestonesData)}
-          {renderPassiveSelector("Ability Milestone", selectedAbilityMilestone, abilityMilestoneId, setAbilityMilestoneId, passiveLevels.abilityMilestone, (val) => setPassiveLevels(prev => ({...prev, abilityMilestone: val})), AbilityMilestonesData)}
-          {renderPassiveSelector("Fist Milestone", selectedFistMilestone, fistMilestoneId, setFistMilestoneId, passiveLevels.fistMilestone, (val) => setPassiveLevels(prev => ({...prev, fistMilestone: val})), FistMilestonesData)}
-          {renderPassiveSelector("Sword Milestone", selectedSwordMilestone, swordMilestoneId, setSwordMilestoneId, passiveLevels.swordMilestone, (val) => setPassiveLevels(prev => ({...prev, swordMilestone: val})), SwordMilestonesData)}
-        </fieldset>
-      </div>
+              <div className="overflow-x-auto">
+                <table className="table table-sm">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th className="text-right">Base</th>
+                      <th className="text-right">Crit Base</th>
+                      <th className="text-right">Max</th>
+                      <th className="text-right">Crit Max</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rows.length === 0 || rows.every((r) => r.damage === 0) ? (
+                      <tr>
+                        <td
+                          colSpan={5}
+                          className="text-center text-base-content/40"
+                        >
+                          No move data
+                        </td>
+                      </tr>
+                    ) : (
+                      rows.map(({ name, damage, scale }, i) => {
+                        const stat = baseStats[scaleToBaseStat[scale]];
+                        const max = computeDmg(damage, scale, stat);
+                        return (
+                          <tr key={i}>
+                            <td>
+                              {name}{" "}
+                              <span className="text-xs text-base-content/60">
+                                ({scale})
+                              </span>
+                            </td>
+                            <td className="text-right">
+                              {damage.toLocaleString()}
+                            </td>
+                            <td className="text-right">
+                              {Math.round(damage * critMult).toLocaleString()}
+                            </td>
+                            <td className="text-right">
+                              {Math.round(max).toLocaleString()}
+                            </td>
+                            <td className="text-right">
+                              {Math.round(max * critMult).toLocaleString()}
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          );
+        })()}
+      </fieldset>
     </div>
   );
 };
