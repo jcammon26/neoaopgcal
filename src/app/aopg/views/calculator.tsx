@@ -220,6 +220,19 @@ const Calculator = () => {
     [allMoves, selectedMoveId],
   );
 
+  // Auto-enable passive specialBuffs when move changes
+  useEffect(() => {
+    if (!selectedMove?.specialBuffs) {
+      setActiveSpecialBuffs([]);
+      return;
+    }
+    const passiveIndices = selectedMove.specialBuffs
+      .map((b, i) => (b.isPassive ? i : -1))
+      .filter((i) => i !== -1);
+    setActiveSpecialBuffs(passiveIndices);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedMove?.id]);
+
   // Auto-uncheck fruit-locked specialBuffs when fruit changes
   useEffect(() => {
     setActiveSpecialBuffs((prev) =>
@@ -1418,7 +1431,6 @@ const Calculator = () => {
                 value={selectedMoveId}
                 onChange={(e) => {
                   setSelectedMoveId(Number(e.target.value));
-                  setActiveSpecialBuffs([]);
                   setIsModeActive(false);
                 }}
               >

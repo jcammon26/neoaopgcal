@@ -35,6 +35,7 @@ export interface SpecialBuff {
   stackable?: boolean;
   exclude?: MoveKey[];
   isFruit?: number[];
+  isPassive?: boolean;
 }
 
 export interface MoveDamage {
