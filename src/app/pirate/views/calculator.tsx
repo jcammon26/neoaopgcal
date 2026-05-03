@@ -15,6 +15,7 @@ import {
   abilityMoves,
   type Scale,
 } from "../data/move";
+import { useSpecialUser } from "../../hooks/useSpecialUser";
 
 const allMoves = [...fistMoves, ...fruitMoves, ...swordMoves, ...abilityMoves];
 
@@ -23,6 +24,18 @@ const scaleConstants: Record<Scale, number> = {
   sword: 1.5077960877,
   ability: 1.9222079596,
 };
+
+const scaleToBaseStat = {
+  fist: "strength",
+  sword: "sword",
+  ability: "ability",
+} as const satisfies Record<Scale, string>;
+
+const scaleToBuffKey = {
+  fist: "fistDamage",
+  sword: "swordDamage",
+  ability: "abilityDamage",
+} as const satisfies Record<Scale, keyof BaseBuff>;
 
 const statTypes = [
   {
@@ -210,8 +223,19 @@ const Calculator = () => {
   const [avatarId, setAvatarId] = useState(0);
   const [avatarLevel, setAvatarLevel] = useState(1);
   const [moveId, setMoveId] = useState(0);
+  const [activeSpecialBuffs, setActiveSpecialBuffs] = useState<number[]>([]);
   const [hakiEnabled, setHakiEnabled] = useState(false);
   const [hakiLevel, setHakiLevel] = useState(0);
+
+  const { unlocked, tryUnlock, lock } = useSpecialUser();
+  const [accessCode, setAccessCode] = useState("");
+  const [showAccessInput, setShowAccessInput] = useState(false);
+  const [accessError, setAccessError] = useState(false);
+  const [reverseDirection, setReverseDirection] = useState<
+    "maxToBase" | "baseToMax"
+  >("maxToBase");
+  const [reverseScale, setReverseScale] = useState<Scale>("fist");
+  const [reverseInput, setReverseInput] = useState<number>(0);
 
   const [milestones, setMilestones] = useState<Record<string, number>>(
     Object.fromEntries(MILESTONE_STATS.map((s) => [s.key, 0])),
@@ -670,26 +694,26 @@ const Calculator = () => {
         <legend className="fieldset-legend font-bold">Move Damage</legend>
         {(() => {
           const selectedMove = allMoves[moveId] || allMoves[0];
-          const scaleToBaseStat: Record<Scale, keyof typeof baseStats> = {
-            fist: "strength",
-            sword: "sword",
-            ability: "ability",
-          };
-          const scaleToBuffKey: Record<Scale, keyof BaseBuff> = {
-            fist: "fistDamage",
-            sword: "swordDamage",
-            ability: "abilityDamage",
-          };
           const damageMult = combinedBuff("damage");
           const critMult = combinedBuff("criticalDamage");
-          const hakiMult = hakiEnabled ? 1.1 + 0.01 * hakiLevel : 1;
+          const baseHakiMult = hakiEnabled ? 1.1 + 0.01 * hakiLevel : 1;
+          const specialBuffs = selectedMove.specialBuffs ?? [];
+          const hasDoubleHaki = activeSpecialBuffs.some(
+            (idx) => specialBuffs[idx]?.doubleHaki,
+          );
+          const hakiMult =
+            hakiEnabled && hasDoubleHaki ? baseHakiMult * 2 : baseHakiMult;
+          const specialMult = activeSpecialBuffs.reduce(
+            (acc, idx) => acc * (specialBuffs[idx]?.buff ?? 1),
+            1,
+          );
           const computeDmg = (
             base: number,
             scale: Scale,
             statValue: number,
           ) => {
             const scaleMult = combinedBuff(scaleToBuffKey[scale]);
-            const buffMult = damageMult * scaleMult * hakiMult;
+            const buffMult = damageMult * scaleMult * hakiMult * specialMult;
             if (statValue === 0) return base * buffMult;
             const constant = scaleConstants[scale];
             return base * (statValue * constant) * buffMult;
@@ -702,7 +726,10 @@ const Calculator = () => {
                 <select
                   className="select select-bordered select-sm max-w-xs"
                   value={moveId}
-                  onChange={(e) => setMoveId(Number(e.target.value))}
+                  onChange={(e) => {
+                    setMoveId(Number(e.target.value));
+                    setActiveSpecialBuffs([]);
+                  }}
                 >
                   {allMoves.map((m, i) => (
                     <option key={i} value={i}>
@@ -751,6 +778,46 @@ const Calculator = () => {
                   </>
                 )}
               </div>
+              {specialBuffs.length > 0 && (
+                <div className="flex flex-wrap items-center gap-3 mb-4">
+                  <span className="font-semibold">Special:</span>
+                  {specialBuffs.map((buff, idx) => {
+                    const checked = activeSpecialBuffs.includes(idx);
+                    return (
+                      <label
+                        key={idx}
+                        className="flex items-center gap-2 cursor-pointer"
+                      >
+                        <input
+                          type="checkbox"
+                          className="checkbox checkbox-sm"
+                          checked={checked}
+                          onChange={() => {
+                            setActiveSpecialBuffs((prev) => {
+                              if (prev.includes(idx)) {
+                                return prev.filter((i) => i !== idx);
+                              }
+                              if (buff.isMode) {
+                                const filtered = prev.filter(
+                                  (i) => !specialBuffs[i]?.isMode,
+                                );
+                                return [...filtered, idx];
+                              }
+                              return [...prev, idx];
+                            });
+                          }}
+                        />
+                        <span className="text-sm">
+                          {buff.name}{" "}
+                          <span className="text-xs text-base-content/60">
+                            ×{buff.buff}
+                          </span>
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+              )}
               <div className="overflow-x-auto">
                 <table className="table table-sm">
                   <thead>
@@ -773,32 +840,65 @@ const Calculator = () => {
                         </td>
                       </tr>
                     ) : (
-                      rows.map(({ name, damage, scale }, i) => {
-                        const stat = baseStats[scaleToBaseStat[scale]];
-                        const max = computeDmg(damage, scale, stat);
-                        return (
-                          <tr key={i}>
-                            <td>
-                              {name}{" "}
-                              <span className="text-xs text-base-content/60">
-                                ({scale})
-                              </span>
-                            </td>
-                            <td className="text-right">
-                              {damage.toLocaleString()}
-                            </td>
-                            <td className="text-right">
-                              {Math.round(damage * critMult).toLocaleString()}
-                            </td>
-                            <td className="text-right">
-                              {Math.round(max).toLocaleString()}
-                            </td>
-                            <td className="text-right">
-                              {Math.round(max * critMult).toLocaleString()}
-                            </td>
-                          </tr>
-                        );
-                      })
+                      <>
+                        {rows.map(({ name, damage, scale }, i) => {
+                          const stat = baseStats[scaleToBaseStat[scale]];
+                          const max = computeDmg(damage, scale, stat);
+                          return (
+                            <tr key={i}>
+                              <td>
+                                {name}{" "}
+                                <span className="text-xs text-base-content/60">
+                                  ({scale})
+                                </span>
+                              </td>
+                              <td className="text-right">
+                                {damage.toLocaleString()}
+                              </td>
+                              <td className="text-right">
+                                {Math.round(damage * critMult).toLocaleString()}
+                              </td>
+                              <td className="text-right">
+                                {Math.round(max).toLocaleString()}
+                              </td>
+                              <td className="text-right">
+                                {Math.round(max * critMult).toLocaleString()}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                        {(() => {
+                          const totals = rows.reduce(
+                            (acc, { damage, scale }) => {
+                              const stat = baseStats[scaleToBaseStat[scale]];
+                              const max = computeDmg(damage, scale, stat);
+                              acc.base += damage;
+                              acc.critBase += damage * critMult;
+                              acc.max += max;
+                              acc.critMax += max * critMult;
+                              return acc;
+                            },
+                            { base: 0, critBase: 0, max: 0, critMax: 0 },
+                          );
+                          return (
+                            <tr className="font-semibold border-t-2 border-base-300">
+                              <td>Total</td>
+                              <td className="text-right">
+                                {Math.round(totals.base).toLocaleString()}
+                              </td>
+                              <td className="text-right">
+                                {Math.round(totals.critBase).toLocaleString()}
+                              </td>
+                              <td className="text-right">
+                                {Math.round(totals.max).toLocaleString()}
+                              </td>
+                              <td className="text-right">
+                                {Math.round(totals.critMax).toLocaleString()}
+                              </td>
+                            </tr>
+                          );
+                        })()}
+                      </>
                     )}
                   </tbody>
                 </table>
@@ -807,6 +907,146 @@ const Calculator = () => {
           );
         })()}
       </fieldset>
+
+      {unlocked ? (
+        <>
+          <fieldset className="fieldset bg-base-200 border-base-300 rounded-box border p-6">
+            <legend className="fieldset-legend font-bold">
+              Damage Reverse Calculator
+            </legend>
+            {(() => {
+              const stat = baseStats[scaleToBaseStat[reverseScale]];
+              const damageMult = combinedBuff("damage");
+              const scaleMult = combinedBuff(scaleToBuffKey[reverseScale]);
+              const hakiMult = hakiEnabled ? 1.1 + 0.01 * hakiLevel : 1;
+              const buffMult = damageMult * scaleMult * hakiMult;
+              const constant = scaleConstants[reverseScale];
+              const fullMult =
+                stat === 0 ? buffMult : stat * constant * buffMult;
+
+              let output = 0;
+              if (reverseDirection === "maxToBase") {
+                output =
+                  fullMult === 0 ? reverseInput : reverseInput / fullMult;
+              } else {
+                output = reverseInput * fullMult;
+              }
+
+              const inputLabel =
+                reverseDirection === "maxToBase" ? "Max" : "Base";
+              const outputLabel =
+                reverseDirection === "maxToBase" ? "Base" : "Max";
+
+              return (
+                <div className="flex flex-wrap gap-4 items-end">
+                  <div className="flex flex-col gap-1">
+                    <label className="text-sm font-semibold">Direction</label>
+                    <select
+                      className="select select-bordered select-sm w-40"
+                      value={reverseDirection}
+                      onChange={(e) =>
+                        setReverseDirection(
+                          e.target.value as "maxToBase" | "baseToMax",
+                        )
+                      }
+                    >
+                      <option value="maxToBase">Max → Base</option>
+                      <option value="baseToMax">Base → Max</option>
+                    </select>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-sm font-semibold">Scale</label>
+                    <select
+                      className="select select-bordered select-sm w-32"
+                      value={reverseScale}
+                      onChange={(e) =>
+                        setReverseScale(e.target.value as Scale)
+                      }
+                    >
+                      <option value="fist">Fist</option>
+                      <option value="sword">Sword</option>
+                      <option value="ability">Ability</option>
+                    </select>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-sm font-semibold">
+                      {inputLabel}
+                    </label>
+                    <input
+                      type="number"
+                      min={0}
+                      step="any"
+                      value={reverseInput}
+                      onChange={(e) =>
+                        setReverseInput(Number(e.target.value) || 0)
+                      }
+                      className="input input-bordered input-sm w-32 text-center"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-sm font-semibold">
+                      {outputLabel}
+                    </label>
+                    <div className="text-success font-semibold text-lg">
+                      {output === 0
+                        ? "0"
+                        : output.toLocaleString(undefined, {
+                            maximumFractionDigits: 4,
+                          })}
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+          </fieldset>
+          <button
+            type="button"
+            onClick={lock}
+            className="btn btn-xs btn-ghost self-start text-base-content/40"
+          >
+            lock
+          </button>
+        </>
+      ) : showAccessInput ? (
+        <form
+          className="flex items-center gap-2 self-start"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (tryUnlock(accessCode)) {
+              setAccessError(false);
+              setAccessCode("");
+              setShowAccessInput(false);
+            } else {
+              setAccessError(true);
+            }
+          }}
+        >
+          <input
+            type="password"
+            placeholder="access code"
+            value={accessCode}
+            onChange={(e) => {
+              setAccessCode(e.target.value);
+              setAccessError(false);
+            }}
+            className="input input-bordered input-sm w-40"
+          />
+          <button type="submit" className="btn btn-sm">
+            unlock
+          </button>
+          {accessError && (
+            <span className="text-error text-xs">invalid</span>
+          )}
+        </form>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setShowAccessInput(true)}
+          className="btn btn-xs btn-ghost self-start text-base-content/40"
+        >
+          enter access code
+        </button>
+      )}
     </div>
   );
 };

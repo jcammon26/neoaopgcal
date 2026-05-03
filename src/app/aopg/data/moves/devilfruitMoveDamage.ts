@@ -1567,4 +1567,13 @@ export const devilFruitMoveDamage: MoveDamage[] = [
       { name: "Void Destruction", buff: 7.5 },
     ],
   },
+  {
+    id: 120,
+    name: "Revive V2",
+    M1: { dmg: 7500 * 1.15, cooldown: 0.5 },
+    Q: { dmg: 1800 * 1.15, cooldown: 40, hits: 67, duration: 67 },
+    E: { dmg: 125000 * 1.15, cooldown: 1 },
+    R: { dmg: 150000 * 1.15, cooldown: 3 },
+    specialBuffs: [{ name: "Soul King", buff: 4.3, isMode: true }],
+  },
 ];

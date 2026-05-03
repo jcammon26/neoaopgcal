@@ -38,6 +38,7 @@ import {
   getMoveDamageValue,
   type MoveData,
 } from "../data/moves";
+import { useSpecialUser } from "../../hooks/useSpecialUser";
 
 const accKeys = [
   {
@@ -204,10 +205,32 @@ const Calculator = () => {
   const [isModeActive, setIsModeActive] = useState<boolean>(false);
   const [activeSpecialBuffs, setActiveSpecialBuffs] = useState<number[]>([]);
 
+  const { unlocked, tryUnlock, lock } = useSpecialUser();
+  const [accessCode, setAccessCode] = useState("");
+  const [showAccessInput, setShowAccessInput] = useState(false);
+  const [accessError, setAccessError] = useState(false);
+  const [revDirection, setRevDirection] = useState<"maxToBase" | "baseToMax">(
+    "maxToBase",
+  );
+  const [revScale, setRevScale] = useState<DamageScale>("fruitbuff");
+  const [revInput, setRevInput] = useState<number>(0);
+
   const selectedMove = useMemo(
     () => allMoves.find((m) => m.id === selectedMoveId),
     [allMoves, selectedMoveId],
   );
+
+  // Auto-uncheck fruit-locked specialBuffs when fruit changes
+  useEffect(() => {
+    setActiveSpecialBuffs((prev) =>
+      prev.filter((idx) => {
+        const b = selectedMove?.specialBuffs?.[idx];
+        if (!b?.isFruit?.length) return true;
+        return b.isFruit.includes(buffs.fruitSBuff);
+      }),
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [buffs.fruitSBuff, selectedMove]);
 
   const scaleToBuffKey: Record<DamageScale, keyof typeof damageBuffs> = {
     fruitbuff: "fruitBuff",
@@ -325,6 +348,47 @@ const Calculator = () => {
 
     const disabledBuff = selectedMove && sourceToBuffKey[selectedMove.source];
 
+    // ===== Fruit + isFruit specialBuff combo =====
+    let chosenFruitId = 0;
+    let chosenFruitSpecialBuffIdx: number | null = null;
+    if (disabledBuff !== "fruitSBuff") {
+      const naturalBest = pickBestBuff(fruitActiveBuffs, scaleKey);
+      const naturalBestValue =
+        (fruitActiveBuffs.find((f) => f.id === naturalBest)?.[scaleKey] as
+          | number
+          | undefined) ?? 1;
+      let bestComboValue = -Infinity;
+      let bestComboFruit = naturalBest;
+      let bestComboBuffIdx: number | null = null;
+      selectedMove?.specialBuffs?.forEach((b, i) => {
+        if (!b.isFruit?.length) return;
+        let bestFruitForBuff = b.isFruit[0];
+        let bestFruitValue = 0;
+        for (const fid of b.isFruit) {
+          const v =
+            (fruitActiveBuffs.find((f) => f.id === fid)?.[scaleKey] as
+              | number
+              | undefined) ?? 1;
+          if (v > bestFruitValue) {
+            bestFruitValue = v;
+            bestFruitForBuff = fid;
+          }
+        }
+        const effectiveValue = bestFruitValue * b.buff;
+        if (effectiveValue > bestComboValue) {
+          bestComboValue = effectiveValue;
+          bestComboFruit = bestFruitForBuff;
+          bestComboBuffIdx = i;
+        }
+      });
+      if (bestComboBuffIdx !== null && bestComboValue > naturalBestValue) {
+        chosenFruitId = bestComboFruit;
+        chosenFruitSpecialBuffIdx = bestComboBuffIdx;
+      } else {
+        chosenFruitId = naturalBest;
+      }
+    }
+
     // ===== Buffs =====
     setBuffs((prev) => ({
       ...prev,
@@ -343,10 +407,7 @@ const Calculator = () => {
           ? 0
           : pickBestBuff(swordActiveBuffs, scaleKey),
 
-      fruitSBuff:
-        disabledBuff === "fruitSBuff"
-          ? 0
-          : pickBestBuff(fruitActiveBuffs, scaleKey),
+      fruitSBuff: chosenFruitId,
 
       supportBuff:
         disabledBuff === "supportBuff"
@@ -369,6 +430,22 @@ const Calculator = () => {
       artifactBuff: pickBestBuff(artifactActiveBuffs, scaleKey),
       contractBuff: pickBestBuff(contractActiveBuffs, scaleKey),
     }));
+
+    // ===== Active special buffs (sync to chosen fruit) =====
+    setActiveSpecialBuffs((prev) => {
+      const filtered = prev.filter((idx) => {
+        const b = selectedMove?.specialBuffs?.[idx];
+        if (!b?.isFruit?.length) return true;
+        return b.isFruit.includes(chosenFruitId);
+      });
+      if (
+        chosenFruitSpecialBuffIdx !== null &&
+        !filtered.includes(chosenFruitSpecialBuffIdx)
+      ) {
+        return [...filtered, chosenFruitSpecialBuffIdx];
+      }
+      return filtered;
+    });
 
     // ===== Base Stats =====
     setBaseStats({
@@ -1280,7 +1357,12 @@ const Calculator = () => {
                     />
                   </label>
                 )}
-                {selectedMove?.specialBuffs?.map((buff, idx) => (
+                {selectedMove?.specialBuffs?.map((buff, idx) => {
+                  const fruitLocked = buff.isFruit && buff.isFruit.length > 0;
+                  const fruitMatches =
+                    !fruitLocked || buff.isFruit!.includes(buffs.fruitSBuff);
+                  if (fruitLocked && !fruitMatches) return null;
+                  return (
                   <label
                     key={idx}
                     className="cursor-pointer flex items-center justify-center gap-2"
@@ -1328,7 +1410,8 @@ const Calculator = () => {
                       }}
                     />
                   </label>
-                ))}
+                  );
+                })}
               </label>
               <select
                 className="select w-full"
@@ -1773,6 +1856,148 @@ const Calculator = () => {
             </table>
           </div>
         </div>
+      </div>
+
+      <div className="w-full max-w-5xl mt-6 flex flex-col gap-2">
+        {unlocked ? (
+          <>
+            <fieldset className="fieldset bg-base-200 border-base-300 rounded-box border p-6">
+              <legend className="fieldset-legend font-bold">
+                Damage Reverse Calculator
+              </legend>
+              {(() => {
+                const stot =
+                  getBaseStat(revScale) + getScaledAccBonus(revScale);
+                const buffMult = damageBuffs[scaleToBuffKey[revScale]] || 1;
+                const factor = 1 + stot / 12.5;
+
+                let output = 0;
+                if (revDirection === "maxToBase") {
+                  if (buffMult !== 0 && factor !== 0) {
+                    output = (revInput / buffMult - stot / 2) / factor;
+                  }
+                } else {
+                  output =
+                    (revInput + stot / 2 + (revInput * stot) / 12.5) * buffMult;
+                }
+
+                const inputLabel =
+                  revDirection === "maxToBase" ? "Max" : "Base";
+                const outputLabel =
+                  revDirection === "maxToBase" ? "Base" : "Max";
+
+                return (
+                  <div className="flex flex-wrap gap-4 items-end">
+                    <div className="flex flex-col gap-1">
+                      <label className="text-sm font-semibold">Direction</label>
+                      <select
+                        className="select select-bordered select-sm w-40"
+                        value={revDirection}
+                        onChange={(e) =>
+                          setRevDirection(
+                            e.target.value as "maxToBase" | "baseToMax",
+                          )
+                        }
+                      >
+                        <option value="maxToBase">Max → Base</option>
+                        <option value="baseToMax">Base → Max</option>
+                      </select>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-sm font-semibold">Scale</label>
+                      <select
+                        className="select select-bordered select-sm w-32"
+                        value={revScale}
+                        onChange={(e) =>
+                          setRevScale(e.target.value as DamageScale)
+                        }
+                      >
+                        <option value="fruitbuff">Fruit</option>
+                        <option value="swordbuff">Sword</option>
+                        <option value="gunbuff">Gun</option>
+                        <option value="strengthbuff">Strength</option>
+                        <option value="hakibuff">Haki</option>
+                      </select>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-sm font-semibold">
+                        {inputLabel}
+                      </label>
+                      <input
+                        type="number"
+                        min={0}
+                        step="any"
+                        value={revInput}
+                        onChange={(e) =>
+                          setRevInput(Number(e.target.value) || 0)
+                        }
+                        className="input input-bordered input-sm w-32 text-center"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-sm font-semibold">
+                        {outputLabel}
+                      </label>
+                      <div className="text-success font-semibold text-lg">
+                        {output === 0
+                          ? "0"
+                          : output.toLocaleString(undefined, {
+                              maximumFractionDigits: 4,
+                            })}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+            </fieldset>
+            <button
+              type="button"
+              onClick={lock}
+              className="btn btn-xs btn-ghost self-start text-base-content/40"
+            >
+              lock
+            </button>
+          </>
+        ) : showAccessInput ? (
+          <form
+            className="flex items-center gap-2 self-start"
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (tryUnlock(accessCode)) {
+                setAccessError(false);
+                setAccessCode("");
+                setShowAccessInput(false);
+              } else {
+                setAccessError(true);
+              }
+            }}
+          >
+            <input
+              type="password"
+              placeholder="access code"
+              value={accessCode}
+              onChange={(e) => {
+                setAccessCode(e.target.value);
+                setAccessError(false);
+              }}
+              className="input input-bordered input-sm w-40"
+            />
+            <button type="submit" className="btn btn-sm">
+              unlock
+            </button>
+            {accessError && (
+              <span className="text-error text-xs">invalid</span>
+            )}
+          </form>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setShowAccessInput(true)}
+            className="btn btn-xs btn-ghost self-start text-base-content/40"
+          >
+            enter access code
+          </button>
+        )}
       </div>
     </div>
   );

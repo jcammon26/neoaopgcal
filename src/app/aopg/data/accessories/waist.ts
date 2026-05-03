@@ -1,7 +1,7 @@
 import type { Accessories } from "./types";
 
 export const waistAccData: Accessories[] = [
-{
+  {
     id: 0,
     name: "None",
     strength: 0,
@@ -33,5 +33,16 @@ export const waistAccData: Accessories[] = [
     gun: 0,
     haki: 0,
     fruit: 1000,
+  },
+  {
+    id: 3,
+    name: "Skeleton's Waistband",
+    strength: 0,
+    stamina: 1750,
+    defense: 0,
+    sword: 3000,
+    gun: 0,
+    haki: 1500,
+    fruit: 3000,
   },
 ];

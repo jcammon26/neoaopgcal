@@ -73,4 +73,13 @@ export const fruitActiveBuffs: ActiveBuffs[] = [
     strengthbuff: 5,
     hakibuff: 5,
   },
+  {
+    id: 8,
+    name: "Revive V2 (Soul King)",
+    fruitbuff: 4.3,
+    swordbuff: 4.3,
+    gunbuff: 4.3,
+    strengthbuff: 4.3,
+    hakibuff: 4.3,
+  },
 ];

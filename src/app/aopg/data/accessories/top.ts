@@ -573,4 +573,15 @@ export const topAccData: Accessories[] = [
     haki: 0,
     fruit: 0,
   },
+  {
+    id: 52,
+    name: "Skeleton's Shirt",
+    strength: 0,
+    stamina: 1750,
+    defense: 0,
+    sword: 3500,
+    gun: 0,
+    haki: 2200,
+    fruit: 3500,
+  },
 ];

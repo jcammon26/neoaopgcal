@@ -6,9 +6,17 @@ export type AbilityDamage = {
   scale: Scale;
 };
 
+export type SpecialBuff = {
+  name: string;
+  buff: number;
+  isMode?: boolean;
+  doubleHaki?: boolean;
+};
+
 export interface move {
   id: number;
   name: string;
   M1: AbilityDamage;
   abilities: AbilityDamage[];
+  specialBuffs?: SpecialBuff[];
 }

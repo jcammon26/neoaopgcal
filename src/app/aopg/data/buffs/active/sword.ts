@@ -100,4 +100,13 @@ export const swordActiveBuffs: ActiveBuffs[] = [
     strengthbuff: 3,
     hakibuff: 3,
   },
+  {
+    id: 11,
+    name: "Soul Cane (Passive)",
+    fruitbuff: 4,
+    swordbuff: 4,
+    gunbuff: 1,
+    strengthbuff: 3.5,
+    hakibuff: 16,
+  },
 ];

@@ -127,6 +127,15 @@ export const suitActiveBuffs: ActiveBuffs[] = [
     strengthbuff: 1.0,
     hakibuff: 1,
   },
+  {
+    id: 14,
+    name: "Skeleton's Suit",
+    fruitbuff: 2,
+    swordbuff: 3.5,
+    gunbuff: 1.0,
+    strengthbuff: 1.0,
+    hakibuff: 1,
+  },
   // {
   //   id: 13,
   //   name: "Vegapunk Suit: Yellow",

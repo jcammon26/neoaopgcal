@@ -601,4 +601,14 @@ export const titleBuffsData: TitleBuffs[] = [
     hakibuff: 1.9,
     rank: "divine",
   },
+  {
+    id: 61,
+    name: "Skeleton's Luck",
+    fruitbuff: 3.5,
+    swordbuff: 3.5,
+    gunbuff: 3.5,
+    strengthbuff: 3.5,
+    hakibuff: 3.5,
+    rank: "divine",
+  },
 ];
