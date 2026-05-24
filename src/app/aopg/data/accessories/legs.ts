@@ -408,4 +408,15 @@ export const legsAccData: Accessories[] = [
     haki: 0,
     fruit: 0,
   },
+    {
+    id: 37,
+    name: "Babylonian Regalia Bottom",
+    strength: 0,
+    stamina: 0,
+    defense: 300,
+    sword: 3200,
+    gun: 0,
+    haki: 0,
+    fruit: 0,
+  },
 ];
