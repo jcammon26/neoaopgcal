@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Roblox Game Damage Calculator
 
-## Getting Started
+A Next.js app for calculating damage and optimizing builds in Roblox anime games. Three calculators in one project:
 
-First, run the development server:
+- **AOPG** — *A One Piece Game*. Accessories, active/passive buffs, six move-damage tables, multi-scale damage system.
+- **Verse** — *Verse Piece*. Stat allocation, ghost rank, accessories with enhancement, traits, four move types (sword / fruit / fighting / spec).
+- **Pirate** — newest calculator. 18-stat `BaseBuff` system, race/clan/trait + aura + avatar (with level scaling) + milestone tiles, click-any-stat-to-maximize.
+
+## Tech
+
+- Next.js 15 (Turbopack) + React 19 + TypeScript
+- Tailwind CSS 4 + DaisyUI 5
+
+## Install
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd aopg-calculator
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+(`yarn`, `pnpm`, and `bun` also work — pick whichever you have.)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Run
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run dev      # dev server with hot reload — http://localhost:3000
+npm run build    # production build
+npm run start    # serve production build
+npm run lint     # ESLint
+```
 
-## Learn More
+## Use
 
-To learn more about Next.js, take a look at the following resources:
+1. Open [http://localhost:3000](http://localhost:3000).
+2. Pick a calculator from the home page (AOPG / Verse / Pirate).
+3. Set your base stats, choose buffs, equip accessories. Numbers update live.
+4. In the Pirate calculator, click any stat in the Stats Overview panel to auto-pick the race/clan/trait/aura/avatar/milestones combo that maximizes it.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project layout
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/app/
+├── page.tsx          # home page (calculator picker)
+├── aopg/             # AOPG calculator
+│   ├── views/
+│   ├── data/         # accessories/, buffs/active/, buffs/passive/, moves/
+│   ├── hooks/
+│   └── utils/
+├── verse/            # Verse calculator
+│   ├── views/
+│   └── data/         # passive/, stat_related/, moves/
+└── pirate/           # Pirate calculator
+    ├── views/
+    └── data/passive/ # races, clans, traits, auras, avatars
+```
 
-## Deploy on Vercel
+## Adding or editing data
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+See [customization.md](customization.md) for the full schema reference and step-by-step instructions for each calculator.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Contributing
+
+1. Fork the repo.
+2. Create a feature branch: `git checkout -b feature/my-thing`.
+3. Commit and push.
+4. Open a PR.
+
+## Contact
+
+Discord: **kingcode99**
+
+## License
+
+Personal/educational use. Game data belongs to the respective Roblox game developers.

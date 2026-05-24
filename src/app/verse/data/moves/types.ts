@@ -1,0 +1,55 @@
+/**
+ * SwordMove Interface
+ * Represents sword style moves with base damage values.
+ */
+export type ScaleType = "strength" | "sword" | "special";
+
+export interface MoveHit {
+  hit: number; // Hit number (1, 2, 3…)
+  damage: number; // Damage of that hit
+  multiplier?: number; // Optional per-hit multiplier
+  upgrade?: number; // Optional upgrade multiplier
+  scaleType?: ScaleType; // Optional per-hit scaling
+}
+
+export interface MoveSlot {
+  hits: MoveHit[];
+  upgrade?: number; // Default upgrade multiplier for all hits in this slot
+  desc?: string; // Optional description for the move slot
+  scaleType?: ScaleType; // Default scaling for all hits in this slot
+}
+
+export interface MoveSet {
+  id: number;
+  name: string;
+
+  M1?: MoveSlot;
+  Z?: MoveSlot;
+  X?: MoveSlot;
+  C?: MoveSlot;
+  V?: MoveSlot;
+  F?: MoveSlot;
+  Y?: MoveSlot;
+}
+
+/**
+ * Utility to generate multiple hits with the same base damage.
+ */
+export function generateHits({
+  baseDamage,
+  count,
+  upgrade,
+  scaleType,
+}: {
+  baseDamage: number;
+  count: number;
+  upgrade?: number;
+  scaleType?: ScaleType;
+}): MoveHit[] {
+  return Array.from({ length: count }, (_, i) => ({
+    hit: i + 1,
+    damage: baseDamage,
+    upgrade,
+    scaleType,
+  }));
+}

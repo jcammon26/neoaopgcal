@@ -1,143 +1,232 @@
 "use client";
-import Calculator from "./views/calculator";
-import GenericTable from "./views/table";
-import { useState } from "react";
-import AccessorySelector from "./views/accselector";
-import BuffSelector, { BuffCategory } from "./views/buffselector";
-import MoveSelector, { MoveCategory } from "./views/moveselector";
-import Navbar from "./views/navbar";
-import {
-  Accessories,
-  headAccData,
-  topAccData,
-  armAccData,
-  backAccData,
-  waistAccData,
-  legsAccData,
-} from "./data/accessories";
-import { titleBuffsData } from "./data/titlebuff";
-import { raceBuffsData } from "./data/racebuff";
-import {
-  armamentActiveBuffs,
-  blacksmithActiveBuffs,
-  conquerorsActiveBuffs,
-  fightingActiveBuffs,
-  fruitActiveBuffs,
-  giantActiveBuffs,
-  gunActiveBuffs,
-  suitActiveBuffs,
-  supportActiveBuffs,
-  swordActiveBuffs,
-} from "./data/activebuff";
-import { gunStyleMoveDamage } from "./data/gunstyleMoveDamage";
-import { swordStyleMoveDamage } from "./data/swordstyleMoveDamage";
-import { fightingStyleMoveDamage } from "./data/fightingstyleMoveDamage";
-import { supportStyleMoveDamage } from "./data/supportstyleMoveDamage";
-import { devilFruitMoveDamage } from "./data/devilfruitMoveDamage";
-import { getMoveTotal } from "./data/move";
-
-type Page = "build" | "accessory" | "buff" | "move";
-
-const accessoryDataMap = {
-  head: headAccData,
-  top: topAccData,
-  arm: armAccData,
-  back: backAccData,
-  waist: waistAccData,
-  legs: legsAccData,
-};
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const buffDataMap: Record<BuffCategory, any[]> = {
-  title: titleBuffsData,
-  race: raceBuffsData,
-  fruit: fruitActiveBuffs,
-  fighting: fightingActiveBuffs,
-  gun: gunActiveBuffs,
-  sword: swordActiveBuffs,
-  armament: armamentActiveBuffs,
-  conqueror: conquerorsActiveBuffs,
-  blacksmith: blacksmithActiveBuffs,
-  giant: giantActiveBuffs,
-  suit: suitActiveBuffs,
-  support: supportActiveBuffs,
-};
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const moveDataMap: Record<MoveCategory, any[]> = {
-  fighting: fightingStyleMoveDamage,
-  sword: swordStyleMoveDamage,
-  gun: gunStyleMoveDamage,
-  support: supportStyleMoveDamage,
-  fruit: devilFruitMoveDamage,
-};
+import Link from "next/link";
+import UpdateModal from "./components/UpdateModal";
 
 export default function Home() {
-  const [currentPage, setCurrentPage] = useState<Page>("build");
-  const [accessorySelected, setAccessorySelected] = useState<
-    "head" | "top" | "arm" | "back" | "waist" | "legs"
-  >("head");
-  const [buffSelected, setBuffSelected] = useState<BuffCategory>("title");
-  const [moveSelected, setMoveSelected] = useState<MoveCategory>("support");
-  const getAccessoryData = () =>
-    accessoryDataMap[accessorySelected]?.filter((buff) => buff.id !== 0) ?? [];
-  const getBuffData = () =>
-    buffDataMap[buffSelected]?.filter((buff) => buff.id !== 0) ?? [];
-  const getMoveData = () =>
-    (moveDataMap[moveSelected] ?? [])
-      .map((move) => ({
-        ...move,
-        total: getMoveTotal(move), // add total damage
-      }))
-      .sort((a, b) => b.total - a.total); // sort descending by total
-
   return (
-    <div className="min-h-screen font-[family-name:var(--font-geist-sans)]">
-      {/* Navbar */}
-      <Navbar
-        selected={currentPage}
-        onSelect={(page) => setCurrentPage(page as Page)}
-      />
+    <div className="min-h-screen font-[family-name:var(--font-geist-sans)] flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+      <main className="flex flex-col gap-8 items-center p-8">
+        <h1 className="text-5xl font-bold text-white mb-8">
+          Choose Your Calculator
+        </h1>
 
-      <main className="flex flex-col gap-8 items-center sm:items-start p-4">
-        {currentPage === "build" && <Calculator />}
+        <div className="flex gap-8 flex-wrap justify-center">
+          {/* AOPG Calculator Card */}
+          <Link href="/aopg">
+            <div className="bg-gradient-to-br from-blue-600 to-blue-800 hover:from-blue-500 hover:to-blue-700 transition-all duration-300 rounded-2xl p-8 w-80 h-64 flex flex-col items-center justify-center cursor-pointer shadow-2xl hover:shadow-blue-500/50 hover:scale-105 transform">
+              <h2 className="text-3xl font-bold text-white mb-4">AOPG</h2>
+              <p className="text-blue-100 text-center text-lg">
+                A One Piece Game Calculator
+              </p>
+              <div className="mt-6 text-sm text-blue-200">Click to enter →</div>
+            </div>
+          </Link>
 
-        {currentPage === "accessory" && (
-          <>
-            <AccessorySelector
-              selected={accessorySelected}
-              onSelect={setAccessorySelected}
-            />
-            <GenericTable<Accessories> data={getAccessoryData()} />
-          </>
-        )}
+          {/* Pirate Calculator Card */}
+          <Link href="/pirate">
+            <div className="bg-gradient-to-br from-purple-600/50 to-purple-800/50 hover:from-purple-500 hover:to-purple-700 transition-all duration-300 rounded-2xl p-8 w-80 h-64 flex flex-col items-center justify-center cursor-pointer shadow-2xl hover:shadow-purple-500/50 hover:scale-105 transform">
+              <h2 className="text-3xl font-bold text-white mb-4">Pirate</h2>
+              <p className="text-purple-100 text-center text-lg">
+                Pirate Piece Calculator
+              </p>
+              <div className="mt-6 text-sm text-purple-200">
+                Click to enter →
+              </div>
+            </div>
+          </Link>
 
-        {currentPage === "buff" && (
-          <>
-            <BuffSelector selected={buffSelected} onSelect={setBuffSelected} />
-            <GenericTable data={getBuffData()} />
-          </>
-        )}
-
-        {currentPage === "move" && (
-          <>
-            <MoveSelector selected={moveSelected} onSelect={setMoveSelected} />
-            <GenericTable data={getMoveData()} />
-          </>
-        )}
-
-        {/* Footer / info */}
-        <div className="fixed bottom-3 left-3 text-xs text-gray-500 dark:text-gray-400">
-          v125 | Last updated: December 21, 2025
+          {/* Verse Calculator Card */}
+          {/* <Link href="/verse">
+            <div className="bg-gradient-to-br from-purple-600/50 to-purple-800/50 hover:from-purple-500 hover:to-purple-700 transition-all duration-300 rounded-2xl p-8 w-80 h-64 flex flex-col items-center justify-center cursor-pointer shadow-2xl hover:shadow-purple-500/50 hover:scale-105 transform">
+              <h2 className="text-3xl font-bold text-white mb-4">Verse</h2>
+              <p className="text-purple-100 text-center text-lg">
+                Verse Piece Calculator
+              </p>
+              <div className="mt-6 text-sm text-purple-200">
+                Click to enter →
+              </div>
+            </div>
+          </Link> */}
         </div>
 
-        <div className="fixed bottom-3 right-3 group cursor-help">
-          <div className="text-xs text-gray-500 dark:text-gray-400">
-            Need help?
-          </div>
-          <div className="absolute bottom-6 right-0 hidden group-hover:block bg-gray-800 text-white text-xs p-2 rounded-md shadow-lg w-44">
-            If there&apos;s a wrong value, DM me on Discord:
-            <span className="font-semibold block mt-1">kingcode99</span>
+        {/* Footer */}
+        <div className="mt-16 text-center">
+          <span className="text-sm text-gray-400 mb-2">
+            Last updated: April 30, 2026
+          </span>
+          <UpdateModal
+            updates={[
+              {
+                version: "v1.3.2.0 | AOPG",
+                date: "April 30, 2026",
+                changes: ["Add pirate piece calculator"],
+              },
+              {
+                version: "v1.3.1.0 | AOPG",
+                date: "April 19, 2026",
+                changes: [
+                  "Add vector damage",
+                  "Add vector buff and accessories",
+                ],
+              },
+              {
+                version: "v1.3.0.0 | AOPG",
+                date: "April 19, 2026",
+                changes: [
+                  "Add final dark/quake damage",
+                  "Add final dark/quake buff and accessories",
+                ],
+              },
+              {
+                version: "v1.2.9.0 | AOPG",
+                date: "April 13, 2026",
+                changes: [
+                  "Add ultimate slime damage",
+                  "Add ultimate slime race, title and buff",
+                ],
+              },
+              {
+                version: "v1.2.8.0 | AOPG",
+                date: "April 5, 2026",
+                changes: [
+                  "New design for the calculator",
+                  "Add the DPS calculator for some styles",
+                  "Add the gambler damage",
+                  "Add the gambler accessories and buff",
+                ],
+              },
+              {
+                version: "v1.2.7.0 | Verse Piece",
+                date: "March 29, 2026",
+                changes: [
+                  "Temporarily remove the damage calculator for Verse Piece",
+                ],
+              },
+              {
+                version: "v1.2.6.0 | AOPG",
+                date: "March 29, 2026",
+                changes: [
+                  "Add heroic demon damage",
+                  "Add heroic demon accessories and buff",
+                ],
+              },
+              {
+                version: "v1.2.5.0 | AOPG",
+                date: "March 15, 2026",
+                changes: [
+                  "Add gravity v3 damage",
+                  "Add gravity accessories and buff",
+                ],
+              },
+              {
+                version: "v1.2.4.0 | AOPG",
+                date: "March 8, 2026",
+                changes: [
+                  "Add heian demon damage",
+                  "Add heian accessories and buff",
+                ],
+              },
+              {
+                version: "v1.2.3.0 | Verse Piece",
+                date: "March 1, 2026",
+                changes: [
+                  "Add scaling for damage calculator",
+                  "Added few swords in moves",
+                ],
+              },
+              {
+                version: "v1.2.2.0 | AOPG",
+                date: "March 1, 2026",
+                changes: [
+                  "Added new move called Ancient Elf + Elven Blood",
+                  "Added new accessory, title, and buff.",
+                ],
+              },
+              {
+                version: "v1.2.1.0 | Verse Piece",
+                date: "February 27, 2026",
+                changes: ["Added Multiple Enchance Buff for damage"],
+              },
+              {
+                version: "v1.2.0.0 | AOPG",
+                date: "February 27, 2026",
+                changes: [
+                  "Added Love Fruit",
+                  "Added Love Goddess",
+                  "Added Yandere",
+                ],
+              },
+              {
+                version: "v1.1.9.0 | Verse Piece",
+                date: "February 22, 2026",
+                changes: [
+                  "Enable the moves damage and table",
+                  "Currently got the damage for Combat and Yuji",
+                  "Will add the other moves damage soon",
+                ],
+              },
+              {
+                version: "v1.1.8.0 | Verse Piece",
+                date: "February 17, 2026",
+                changes: ["Added Yuta Update"],
+              },
+              {
+                version: "v1.1.7.0 | Verse Piece",
+                date: "February 8, 2026",
+                changes: ["Added Chainsaw Update", "Added Black Clover"],
+              },
+              {
+                version: "v1.1.6.0 | Verse Piece",
+                date: "January 28, 2026",
+                changes: [
+                  "Added Race",
+                  "Added Trait",
+                  "Added Title",
+                  "Added Haki",
+                ],
+              },
+              {
+                version: "v1.1.5.0 | Verse Piece",
+                date: "January 27, 2026",
+                changes: [
+                  "Initial release",
+                  "Added base stats calculator with 80,000 total cap",
+                  "Added accessory selector with enhancement system",
+                  "Added 78 accessories with increment values",
+                ],
+              },
+              {
+                version: "v1.1.4.0 | AOPG",
+                date: "February 22, 2026",
+                changes: [
+                  "Updated the Suits Buff",
+                  "Updated the Support Styles Buff",
+                ],
+              },
+              {
+                version: "v1.1.3.0 | AOPG",
+                date: "February 17, 2026",
+                changes: ["Added Yuta Update"],
+              },
+              {
+                version: "v1.1.2.0 | AOPG",
+                date: "February 8, 2026",
+                changes: ["Added Shanks Update", "Added Imu's Update"],
+              },
+              {
+                version: "v1.1.1.0 | AOPG",
+                date: "January 27, 2026",
+                changes: [
+                  "Added Final Soul Damage",
+                  "Added Final Soul Buff",
+                  "Added new suit called Mother's Kimono",
+                ],
+              },
+            ]}
+          />
+          <div className="text-xs text-gray-500">
+            Need help? DM me on Discord:{" "}
+            <span className="font-semibold text-gray-300">kingcode99</span>
           </div>
         </div>
       </main>
