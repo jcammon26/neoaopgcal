@@ -584,4 +584,15 @@ export const topAccData: Accessories[] = [
     haki: 2200,
     fruit: 3500,
   },
+  {
+    id: 53,
+    name: "Babylonian Regalia Top",
+    strength: 0,
+    stamina: 0,
+    defense: 2300,
+    sword: 3400,
+    gun: 0,
+    haki: 0,
+    fruit: 0,
+  },
 ];
