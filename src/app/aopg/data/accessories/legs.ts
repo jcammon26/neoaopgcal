@@ -419,4 +419,15 @@ export const legsAccData: Accessories[] = [
     haki: 0,
     fruit: 0,
   },
+  {
+    id: 55,
+    name: "Giant Sandals",
+    strength: 2500,
+    stamina: 1500,
+    defense: 0,
+    sword: 0,
+    gun: 0,
+    haki: 2500,
+    fruit: 3500,
+  },
 ];
