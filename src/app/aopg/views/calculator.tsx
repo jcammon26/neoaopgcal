@@ -462,11 +462,11 @@ const Calculator = () => {
 
     // ===== Base Stats =====
     setBaseStats({
-      fruit: 15000,
-      sword: 15000,
-      gun: 15000,
-      strength: 15000,
-      haki: 15000,
+      fruit: 16000,
+      sword: 16000,
+      gun: 16000,
+      strength: 16000,
+      haki: 16000,
     });
   };
 
@@ -1034,11 +1034,11 @@ const Calculator = () => {
                 <input
                   type="number"
                   min="0"
-                  max="15000"
+                  max="16000"
                   value={value}
                   onChange={(e) => {
                     const val = Math.min(
-                      15000,
+                      16000,
                       Math.max(0, Number(e.target.value) || 0),
                     );
                     setBaseStats((prev) => ({
