@@ -1020,7 +1020,7 @@ const Calculator = () => {
                 <input
                   type="range"
                   min="0"
-                  max="15000"
+                  max="16000"
                   value={value}
                   onChange={(e) =>
                     setBaseStats((prev) => ({
