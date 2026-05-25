@@ -109,4 +109,13 @@ export const swordActiveBuffs: ActiveBuffs[] = [
     strengthbuff: 3.5,
     hakibuff: 16,
   },
+  {
+    id: 12,
+    name: "Golden King (King's Treasury)",
+    fruitbuff: 4,
+    swordbuff: 4,
+    gunbuff: 1,
+    strengthbuff: 4,
+    hakibuff: 16,
+  },
 ];
