@@ -650,4 +650,15 @@ export const headAccData: Accessories[] = [
     haki: 1500,
     fruit: 3000,
   },
+  {
+    id: 59,
+    name: "Flamingo Goggles",
+    strength: 600,
+    stamina: 600,
+    defense: 0,
+    sword: 0,
+    gun: 0,
+    haki: 600,
+    fruit: 600,
+  },
 ];
