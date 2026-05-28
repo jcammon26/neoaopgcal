@@ -632,7 +632,7 @@ export const titleBuffsData: TitleBuffs[] = [
     rank: "divine",
   },
       {
-    id: 63,
+    id: 64,
     name: "Prince Of Chaos",
     fruitbuff: 4.8,
     swordbuff: 1,
