@@ -397,4 +397,22 @@ export const supportActiveBuffs: ActiveBuffs[] = [
     strengthbuff: 4.2,
     hakibuff: 4.2,
   },
+    {
+    id: 43,
+    name: "Chaos Prince (True Destruction)",
+    fruitbuff: 1,
+    swordbuff: 1,
+    gunbuff: 1,
+    strengthbuff: 4,
+    hakibuff: 1,
+  },
+    {
+    id: 43,
+    name: "Chaos Prince (True Destruction) + (Saiyan Pride)",
+    fruitbuff: 1.5,
+    swordbuff: 1.5,
+    gunbuff: 1.5,
+    strengthbuff: 5.5,
+    hakibuff: 1.5,
+  },
 ];
