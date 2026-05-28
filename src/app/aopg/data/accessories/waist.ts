@@ -45,4 +45,15 @@ export const waistAccData: Accessories[] = [
     haki: 1500,
     fruit: 3000,
   },
+  {
+    id: 4,
+    name: "Yellow Waist Band",
+    strength: 600,
+    stamina: 600,
+    defense: 0,
+    sword: 0,
+    gun: 0,
+    haki: 600,
+    fruit: 600,
+  },
 ];
