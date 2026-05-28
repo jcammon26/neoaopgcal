@@ -118,6 +118,7 @@ export const armAccData: Accessories[] = [
     gun: 0,
     haki: 1200,
     fruit: 1500,
+    link: "https://trello.com/c/1kUKHScR/353-ring-of-stars",
   },
   {
     id: 10,
@@ -129,5 +130,6 @@ export const armAccData: Accessories[] = [
     gun: 0,
     haki: 2500,
     fruit: 2500,
+    link: "https://trello.com/c/dPyA4ctr/359-vector-masters-crutch-accessory",
   },
 ];
