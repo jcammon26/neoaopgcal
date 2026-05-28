@@ -22,5 +22,6 @@ export const passiveData: Accessories[] = [
     gun: 2000,
     haki: 2000,
     fruit: 2000,
+    link: "https://trello.com/c/gkBA0kBt/1593-shadow-ruler",
   },
 ];
