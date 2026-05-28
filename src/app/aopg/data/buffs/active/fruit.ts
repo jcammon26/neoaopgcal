@@ -82,4 +82,22 @@ export const fruitActiveBuffs: ActiveBuffs[] = [
     strengthbuff: 4.3,
     hakibuff: 4.3,
   },
+  {
+    id: 9,
+    name: "Gear Third",
+    fruitbuff: 3,
+    swordbuff: 3,
+    gunbuff: 3,
+    strengthbuff: 3,
+    hakibuff: 3,
+  },
+  {
+    id: 10,
+    name: "True Rubber (True Rubber)",
+    fruitbuff: 7.5,
+    swordbuff: 6,
+    gunbuff: 6,
+    strengthbuff: 6,
+    hakibuff: 6,
+  },
 ];
