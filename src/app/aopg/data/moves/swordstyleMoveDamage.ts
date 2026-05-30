@@ -1023,6 +1023,7 @@ export const swordStyleMoveDamage: MoveDamage[] = [
     Q: { dmg: 50000, cooldown: 5 },
     E: { dmg: 65000, cooldown: 11 },
     F: { dmg: 110000, cooldown: 3 },
+    scale: "swordbuff",
     specialBuffs: [
       { name: "Soul Cane Passive", buff: 4, isMode: true },
       { name: "Revive Fruit V2", buff: 1.5, isFruit: [8] },
