@@ -148,9 +148,9 @@ export const suitActiveBuffs: ActiveBuffs[] = [
     id: 15,
     name: "Saiyan Battle Suit",
     fruitbuff: 1,
-    swordbuff: 6,
+    swordbuff: 1,
     gunbuff: 1.0,
-    strengthbuff: 1.0,
+    strengthbuff: 6,
     hakibuff: 1,
   },
 ];
