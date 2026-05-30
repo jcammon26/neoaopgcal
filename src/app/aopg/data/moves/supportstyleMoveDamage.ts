@@ -847,7 +847,7 @@ export const supportStyleMoveDamage: MoveDamage[] = [
     specialBuffs: [
       { name: "True Destruction", buff: 4, isMode: true },
       { name: "Saiyan Pride", buff: 1.5, isMode: true },
-      { name: "Rivalry", buff: 1.2, isStrength: [8] },
+      { name: "Rivalry", buff: 1.2, isMode: true },
     ],
     scale: "strengthbuff",
   },
