@@ -832,22 +832,4 @@ export const supportStyleMoveDamage: MoveDamage[] = [
     },
     scale: "fruitbuff",
   },
-  {
-    id: 63,
-    name: "Chaos Prince",
-    M1: { dmg: 40000, cooldown: 2, hits: 1 },
-    Q: 0,
-    E: { dmg: 80000, cooldown: 8, hits: 2 },
-    R: { dmg: 4000, cooldown: 7, hits: 30 },
-    F: 0,
-    G: { dmg: 20000, cooldown: 10, hits: 15 },
-    U: { dmg: 50000000000000, cooldown: 30, hits: 50 },
-    Y: { dmg: 10000, cooldown: 30, hits: 100 },
-    specialBuffs: [
-      { name: "True Destruction", buff: 4, isMode: true },
-      { name: "Saiyan Pride", buff: 1.5, isMode: true },
-      { name: "Rivalry", buff: 1.2, isMode: true },
-    ],
-    scale: "strengthbuff",
-  },
 ];
