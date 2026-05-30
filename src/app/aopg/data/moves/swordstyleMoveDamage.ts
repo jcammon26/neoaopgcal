@@ -1028,4 +1028,21 @@ export const swordStyleMoveDamage: MoveDamage[] = [
       { name: "Revive Fruit V2", buff: 1.5, isFruit: [8] },
     ],
   },
+  {
+    id: 80,
+    name: "Golden King",
+    M1: 3500,
+    U: 0,
+  },
+  {
+    id: 81,
+    name: "Golden King + Kings Treasury",
+    M1: { dmg: 7000, cooldown: 0.5, hits: 1 },
+    Q: { dmg: 80,000, cooldown: 4, hits: 1 },
+    E: { dmg: 3700, cooldown: 8, hits: 27 },
+    R: { dmg: 2500, cooldown: 10, hits: 30 },
+    F: { dmg: 70000, cooldown: 8, hits: 1 },
+    U: 0,
+    Y: { dmg: 24000, cooldown: 15, hits: 5 },
+  },
 ];
