@@ -842,7 +842,7 @@ export const supportStyleMoveDamage: MoveDamage[] = [
     F: 0,
     G: { dmg: 20000, cooldown: 10, hits: 15 },
     U: 0,
-    V: { dmg: 10000, cooldown: 30, hits: 100 },
+    Y: { dmg: 10000, cooldown: 30, hits: 100 },
     B: { dmg: 50000000000000, cooldown: 30, hits: 50 },
     specialBuffs: [
       { name: "True Destruction", buff: 4, isMode: true },
