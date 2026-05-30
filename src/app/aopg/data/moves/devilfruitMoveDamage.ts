@@ -1552,6 +1552,7 @@ export const devilFruitMoveDamage: MoveDamage[] = [
     Q: { dmg: 1800 * 1.15, cooldown: 40, hits: 67, duration: 67 },
     E: { dmg: 125000 * 1.15, cooldown: 1 },
     R: { dmg: 150000 * 1.15, cooldown: 3 },
+    scale: "fruitbuff",
     specialBuffs: [{ name: "Soul King", buff: 4.3, isMode: true }],
   },
 ];
