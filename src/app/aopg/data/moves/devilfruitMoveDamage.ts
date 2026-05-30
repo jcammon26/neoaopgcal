@@ -1555,4 +1555,24 @@ export const devilFruitMoveDamage: MoveDamage[] = [
     scale: "fruitbuff",
     specialBuffs: [{ name: "Soul King", buff: 4.3, isMode: true }],
   },
+   {
+    id: 121,
+    name: "Gear Third",
+    Q: { dmg: 25000, cooldown: 3, hits: 1},
+    E: { dmg: 30000, cooldown: 5, hits: 25},
+    R: { dmg: 40000, cooldown: 2, hits: 1},
+    specialBuffs: [{ name: "Gear Third", buff: 3, isMode: true }]
+  },
+  {
+    id: 122,
+    name: "True Sun God",
+    M1: { dmg: 55000 / 7.5, cooldown: 0.5, hits: 1},
+    Q: { dmg: 185000 / 7.5, cooldown: 1, hits: 1},
+    E: { dmg: 250000 / 7.5, cooldown: 5, hits: 30},
+    R: { dmg: 120000 / 7.5, cooldown: 3, hits: 2},
+    F: { dmg: 140000 / 7.5, cooldown: 5, hits: 20},
+    G: { dmg: 250000 / 7.5, cooldown: 6, hits: 1},
+    U: 0,
+    specialBuffs: [{ name: "True Rubber", buff: 7.5, isMode: true }]
+  },
 ];
