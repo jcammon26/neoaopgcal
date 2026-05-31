@@ -1568,9 +1568,9 @@ export const devilFruitMoveDamage: MoveDamage[] = [
     name: "True Sun God",
     M1: { dmg: 55000, cooldown: 0.5, hits: 1},
     Q: { dmg: 185000, cooldown: 1, hits: 1},
-    E: { dmg: 250000, cooldown: 5, hits: 30},
-    R: { dmg: 120000, cooldown: 3, hits: 2},
-    F: { dmg: 140000, cooldown: 5, hits: 20},
+    E: { dmg: 250000 / 30, cooldown: 5, hits: 30},
+    R: { dmg: 120000 / 2, cooldown: 3, hits: 2},
+    F: { dmg: 140000 / 20, cooldown: 5, hits: 20},
     G: { dmg: 250000, cooldown: 6, hits: 1},
     U: 0,
     specialBuffs: [{ name: "True Rubber", buff: 7.5, isMode: true }]
