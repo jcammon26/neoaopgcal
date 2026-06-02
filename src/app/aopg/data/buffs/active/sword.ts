@@ -118,4 +118,13 @@ export const swordActiveBuffs: ActiveBuffs[] = [
     strengthbuff: 4,
     hakibuff: 16,
   },
+    {
+    id: 13,
+    name: "Sword Saint (Dragon Sword Reid)",
+    fruitbuff: 5,
+    swordbuff: 6.5,
+    gunbuff: 5,
+    strengthbuff: 5,
+    hakibuff: 16,
+  },
 ];
