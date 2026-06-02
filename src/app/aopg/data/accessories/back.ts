@@ -357,4 +357,15 @@ export const backAccData: Accessories[] = [
     haki: 1600,
     fruit: 2750,
   },
+   {
+    id: 30,
+    name: "Sword Saint Cloak",
+    strength: 0,
+    stamina: 0,
+    defense: 1500,
+    sword: 2750,
+    gun: 0,
+    haki: 1750,
+    fruit: 0,
+  },
 ];
