@@ -399,7 +399,7 @@ export const raceBuffsData: RaceBuffs[] = [
   },
     {
     id: 36,
-    name: "Gear",
+    name: "Van Astrea",
     fruitbuff: 3,
     swordbuff: 5,
     gunbuff: 3,
