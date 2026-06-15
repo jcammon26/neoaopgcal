@@ -24,4 +24,15 @@ export const passiveData: Accessories[] = [
     fruit: 2000,
     link: "https://trello.com/c/gkBA0kBt/1593-shadow-ruler",
   },
+  {
+    id: 2,
+    name: "Giant's DNA",
+    strength: 3000,
+    stamina: 3000,
+    defense: 3000,
+    sword: 3000,
+    gun: 3000,
+    haki: 3000,
+    fruit: 3000,
+  },
 ];
