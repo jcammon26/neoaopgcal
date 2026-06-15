@@ -46,4 +46,13 @@ export const artifactActiveBuffs: ActiveBuffs[] = [
     strengthbuff: 3,
     hakibuff: 1,
   },
+  {
+    id: 5,
+    name: "Sniper King",
+    fruitbuff: 1,
+    swordbuff: 1,
+    gunbuff: 3,
+    strengthbuff: 1,
+    hakibuff: 2,
+  },
 ];
