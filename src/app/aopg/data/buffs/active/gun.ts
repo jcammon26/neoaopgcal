@@ -55,4 +55,13 @@ export const gunActiveBuffs: ActiveBuffs[] = [
     strengthbuff: 1,
     hakibuff: 1,
   },
+  {
+    id: 6,
+    name: "Final Slingshot (Passive)",
+    fruitbuff: 3.5,
+    swordbuff: 3.5,
+    gunbuff: 3.5,
+    strengthbuff: 3.5,
+    hakibuff: 7.5,
+  },
 ];
