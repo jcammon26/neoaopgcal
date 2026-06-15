@@ -661,4 +661,15 @@ export const headAccData: Accessories[] = [
     haki: 600,
     fruit: 600,
   },
+  {
+    id: 60,
+    name: "Long Nose",
+    strength: 0,
+    stamina: 2000,
+    defense: 2500,
+    sword: 0,
+    gun: 2500,
+    haki: 2000,
+    fruit: 0,
+  },
 ];
