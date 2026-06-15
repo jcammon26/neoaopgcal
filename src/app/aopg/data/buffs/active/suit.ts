@@ -153,4 +153,13 @@ export const suitActiveBuffs: ActiveBuffs[] = [
     strengthbuff: 6,
     hakibuff: 1,
   },
+    {
+    id: 16,
+    name: "Sniper's Suit",
+    fruitbuff: 1,
+    swordbuff: 1,
+    gunbuff: 8,
+    strengthbuff: 1,
+    hakibuff: 1,
+  },
 ];
