@@ -430,4 +430,15 @@ export const legsAccData: Accessories[] = [
     haki: 2500,
     fruit: 3500,
   },
+    {
+    id: 56,
+    name: "Sovereign Bottom",
+    strength: 1850,
+    stamina: 0,
+    defense: 1700,
+    sword: 2600,
+    gun: 0,
+    haki: 0,
+    fruit: 0,
+  },
 ];
