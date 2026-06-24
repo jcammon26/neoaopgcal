@@ -408,4 +408,15 @@ export const raceBuffsData: RaceBuffs[] = [
     note: "No other damage buff",
     image: "/resources/santa.jpg",
   },
+      {
+    id: 37,
+    name: "Black Heart",
+    fruitbuff: 3.5,
+    swordbuff: 5.5,
+    gunbuff: 3.5,
+    strengthbuff: 5.5,
+    hakibuff: 3.5,
+    note: "No other damage buff",
+    image: "/resources/santa.jpg",
+  },
 ];
