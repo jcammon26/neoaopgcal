@@ -127,4 +127,13 @@ export const swordActiveBuffs: ActiveBuffs[] = [
     strengthbuff: 5,
     hakibuff: 16,
   },
+    {
+    id: 14,
+    name: "Hinokami Sword (Hinokami Rage)",
+    fruitbuff: 3.5,
+    swordbuff: 5,
+    gunbuff: 3.5,
+    strengthbuff: 3.5,
+    hakibuff: 3.5,
+  },
 ];
