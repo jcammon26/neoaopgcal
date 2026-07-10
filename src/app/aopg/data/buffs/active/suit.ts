@@ -162,4 +162,13 @@ export const suitActiveBuffs: ActiveBuffs[] = [
     strengthbuff: 1,
     hakibuff: 1,
   },
+      {
+    id: 17,
+    name: "Summer Haori",
+    fruitbuff: 1,
+    swordbuff: 4.5,
+    gunbuff: 1,
+    strengthbuff: 1,
+    hakibuff: 1,
+  },
 ];
