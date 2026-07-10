@@ -628,4 +628,15 @@ export const topAccData: Accessories[] = [
     haki: 0,
     fruit: 0,
   },
+      {
+    id: 57,
+    name: "Sun Haori",
+    strength: 0,
+    stamina: 1800,
+    defense: 2000,
+    sword: 3000,
+    gun: 0,
+    haki: 0,
+    fruit: 0,
+  },
 ];
