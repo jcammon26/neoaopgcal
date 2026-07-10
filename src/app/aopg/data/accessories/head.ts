@@ -672,4 +672,15 @@ export const headAccData: Accessories[] = [
     haki: 2000,
     fruit: 0,
   },
+  {
+    id: 61,
+    name: "Tsugikuni Earings",
+    strength: 3500,
+    stamina: 1500,
+    defense: 1500,
+    sword: 1500,
+    gun: 0,
+    haki: 0,
+    fruit: 0,
+  },
 ];
