@@ -415,4 +415,13 @@ export const supportActiveBuffs: ActiveBuffs[] = [
     strengthbuff: 5.5,
     hakibuff: 1.5,
   },
+    {
+    id: 46,
+    name: "Shadow Soverign",
+    fruitbuff: 5,
+    swordbuff: 6.5,
+    gunbuff: 5,
+    strengthbuff: 5,
+    hakibuff: 5,
+  },
 ];
