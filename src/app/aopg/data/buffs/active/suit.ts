@@ -171,4 +171,13 @@ export const suitActiveBuffs: ActiveBuffs[] = [
     strengthbuff: 1,
     hakibuff: 1,
   },
+      {
+    id: 18,
+    name: "Cherry Blossom",
+    fruitbuff: 2,
+    swordbuff: 3.5,
+    gunbuff: 1,
+    strengthbuff: 1,
+    hakibuff: 1,
+  },
 ];
