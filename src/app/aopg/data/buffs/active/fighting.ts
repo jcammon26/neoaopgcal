@@ -163,4 +163,13 @@ export const fightingActiveBuffs: ActiveBuffs[] = [
     strengthbuff: 3.5,
     hakibuff: 3.5,
   },
+  {
+    id: 18,
+    name: "Primal Saiyan (One more bonus)",
+    fruitbuff: 5,
+    swordbuff: 5,
+    gunbuff: 5,
+    strengthbuff: 6.75,
+    hakibuff: 5,
+  },
 ];
