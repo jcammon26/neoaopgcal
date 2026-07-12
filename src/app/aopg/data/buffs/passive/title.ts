@@ -681,7 +681,7 @@ export const titleBuffsData: TitleBuffs[] = [
     hakibuff: 3.5,
     rank: "divine",
   },
-          {
+    {
     id: 69,
     name: "Sun Slayer",
     fruitbuff: 3,
@@ -689,6 +689,16 @@ export const titleBuffsData: TitleBuffs[] = [
     gunbuff: 3,
     strengthbuff: 3,
     hakibuff: 3,
+    rank: "divine",
+  },
+     {
+    id: 70,
+    name: "Primal Power",
+    fruitbuff: 5.5,
+    swordbuff: 5.5,
+    gunbuff: 5.5,
+    strengthbuff: 5.5,
+    hakibuff: 5.5,
     rank: "divine",
   },
 ];
