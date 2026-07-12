@@ -430,4 +430,15 @@ export const raceBuffsData: RaceBuffs[] = [
     note: "No other damage buff",
     image: "/resources/santa.jpg",
   },
+       {
+    id: 39,
+    name: "Awakend Saiyan",
+    fruitbuff: 3.75,
+    swordbuff: 3.75,
+    gunbuff: 3.75,
+    strengthbuff: 3.75,
+    hakibuff: 3.75,
+    note: "No other damage buff",
+    image: "/resources/santa.jpg",
+  },
 ];
