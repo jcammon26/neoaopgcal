@@ -180,4 +180,13 @@ export const suitActiveBuffs: ActiveBuffs[] = [
     strengthbuff: 1,
     hakibuff: 1,
   },
+        {
+    id: 19,
+    name: "Solemn Lament E.G.O Gear",
+    fruitbuff: 1,
+    swordbuff: 3,
+    gunbuff: 7,
+    strengthbuff: 1,
+    hakibuff: 1,
+  },
 ];
