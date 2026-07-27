@@ -64,4 +64,13 @@ export const gunActiveBuffs: ActiveBuffs[] = [
     strengthbuff: 3.5,
     hakibuff: 7.5,
   },
+    {
+    id: 7,
+    name: "Solemn Lament (Passive)",
+    fruitbuff: 3,
+    swordbuff: 3,
+    gunbuff: 3,
+    strengthbuff: 3,
+    hakibuff: 3,
+  },
 ];
