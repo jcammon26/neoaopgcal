@@ -66,7 +66,7 @@ export const gunActiveBuffs: ActiveBuffs[] = [
   },
     {
     id: 7,
-    name: "Solemn Lament (Passive)",
+    name: "Solemn Lament (Shin and Mang)",
     fruitbuff: 3,
     swordbuff: 3,
     gunbuff: 3,
