@@ -368,4 +368,15 @@ export const backAccData: Accessories[] = [
     haki: 1750,
     fruit: 0,
   },
+     {
+    id: 31,
+    name: "Awakened Kids Cape",
+    strength: 0,
+    stamina: 1600,
+    defense: 0,
+    sword: 0,
+    gun: 0,
+    haki: 1500,
+    fruit: 2800,
+  },
 ];
