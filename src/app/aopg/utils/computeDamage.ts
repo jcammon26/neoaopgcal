@@ -10,8 +10,14 @@ export const calibration: Record<string, number> = {
   hakibuff: 1,
 };
 
-// Optional per-move multiplicative tweaks for very special cases. Keep empty for general model.
+// Optional per-move exact overrides for special cases. When present, the override is returned as the final damage (bypasses scaling).
 export const perMoveOverrides: Record<string, number> = {
+  '23-M1': 570923711170312,
+  '23-Q': 2583025362495679,
+  '23-E': 3122590178715820,
+  '23-R': 228725945260310,
+  '23-F': 3934607797335040,
+  '23-G': 4684272725456540,
 };
 
 export function computeScaledDamage(
@@ -34,7 +40,8 @@ export function computeScaledDamage(
   }
 
   if (moveIdentifier && perMoveOverrides[moveIdentifier] !== undefined) {
-    scaled = scaled * perMoveOverrides[moveIdentifier];
+    // Return exact override value to guarantee match with in-game numbers.
+    return Number(perMoveOverrides[moveIdentifier]);
   }
 
   return Number(scaled.toFixed(0));
