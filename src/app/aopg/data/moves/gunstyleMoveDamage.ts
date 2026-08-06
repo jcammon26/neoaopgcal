@@ -261,7 +261,7 @@ export const gunStyleMoveDamage: MoveDamage[] = [
     {
     id: "300S06",
     name: "Solemn Lament",
-    M!: { dmg: 9000, hits: 1 },
+    M1: { dmg: 9000, hits: 1 },
     Q: { dmg: 12500, hits: 6 },
     E: { dmg: 40000, hits: 2 },
     R: { dmg: 30000,  hits: 2 },
