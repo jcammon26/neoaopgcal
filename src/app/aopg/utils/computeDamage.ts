@@ -18,6 +18,13 @@ export const perMoveOverrides: Record<string, number> = {
   '23-R': 228725945260310,
   '23-F': 3934607797335040,
   '23-G': 4684272725456540,
+    // Auriga + Ox-Demon Form (assigned id in UI/allMoves mapping: 114)
+    '114-M1': 570923711170312,
+    '114-Q': 2583025362495679,
+    '114-E': 3122590178715820,
+    '114-R': 228725945260310,
+    '114-F': 3934607797335040,
+    '114-G': 4684272725456540,
 };
 
 export function computeScaledDamage(
