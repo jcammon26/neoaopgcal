@@ -39,6 +39,7 @@ import {
   type MoveData,
 } from "../data/moves";
 import { useSpecialUser } from "../../hooks/useSpecialUser";
+import { computeScaledDamage } from "../utils/computeDamage";
 
 const accKeys = [
   {
@@ -581,11 +582,15 @@ const Calculator = () => {
         const buffMult = damageBuffs[scaleToBuffKey[scale]] || 1;
         const baseStat = getBaseStat(scale);
 
-        const calculatedDamage =
-          (damage +
-            (baseStat + scaledAccBonus) / 2 +
-            (damage * (baseStat + scaledAccBonus)) / 12.5) *
-          buffMult;
+        const moveIdentifier = `${selectedMove?.id}-${moveKey}`;
+        const calculatedDamage = computeScaledDamage(
+          damage,
+          baseStat + scaledAccBonus,
+          buffMult,
+          1,
+          scale,
+          moveIdentifier,
+        );
 
         return total + calculatedDamage;
       }, 0);
@@ -610,11 +615,15 @@ const Calculator = () => {
       const buffMult = damageBuffs[scaleToBuffKey[scale]] || 1;
       const baseStat = getBaseStat(scale);
 
-      const calculatedDamage =
-        (baseDamage +
-          (baseStat + scaledAccBonus) / 2 +
-          (baseDamage * (baseStat + scaledAccBonus)) / 12.5) *
-        buffMult;
+      const moveIdentifier = `${selectedMove?.id}-${moveKey}`;
+      const calculatedDamage = computeScaledDamage(
+        baseDamage,
+        baseStat + scaledAccBonus,
+        buffMult,
+        1,
+        scale,
+        moveIdentifier,
+      );
 
       if (calculatedDamage > maxDamage) {
         maxDamage = calculatedDamage;
@@ -1889,8 +1898,7 @@ const Calculator = () => {
                     output = (revInput / buffMult - stot / 2) / factor;
                   }
                 } else {
-                  output =
-                    (revInput + stot / 2 + (revInput * stot) / 12.5) * buffMult;
+                  output = computeScaledDamage(revInput, stot, buffMult, 1, revScale);
                 }
 
                 const inputLabel =
