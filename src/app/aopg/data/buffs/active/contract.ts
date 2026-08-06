@@ -19,4 +19,13 @@ export const contractActiveBuffs: ActiveBuffs[] = [
     strengthbuff: 1.5,
     hakibuff: 1.5,
   },
+    {
+    id: 2,
+    name: "Giant DNA",
+    fruitbuff: 2,
+    swordbuff: 2,
+    gunbuff: 2,
+    strengthbuff: 2,
+    hakibuff: 2,
+  },
 ];
