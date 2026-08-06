@@ -258,4 +258,14 @@ export const gunStyleMoveDamage: MoveDamage[] = [
     U: 0,
     Y: 5000,
   },
+    {
+    id: "300S06",
+    name: "Solemn Lament",
+    M!: { dmg: 9000, hits: 1 },
+    Q: { dmg: 12500, hits: 6 },
+    E: { dmg: 40000, hits: 2 },
+    R: { dmg: 30000,  hits: 2 },
+    F: { dmg: 6000,  hits: 15 },
+    specialBuffs: [{ name: "Shin and Mang", buff: 3, isMode: true }],
+  },
 ];
