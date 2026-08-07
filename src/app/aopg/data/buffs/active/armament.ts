@@ -104,10 +104,10 @@ export const armamentActiveBuffs: ActiveBuffs[] = [
   {
     id: 11,
     name: "Final Armament Haki Stage 3",
-    fruitbuff: 3.9,
-    swordbuff: 3.9,
-    gunbuff: 3.9,
-    strengthbuff: 3.9,
-    hakibuff: 3.9,
+    fruitbuff: 4,
+    swordbuff: 4,
+    gunbuff: 4,
+    strengthbuff: 4,
+    hakibuff: 4,
   },
 ];
