@@ -8,7 +8,7 @@ export default function Home() {
       <main className="flex flex-col gap-8 items-center p-8 max-w-6xl">
         <div className="text-center mb-8">
           <h1 className="text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent mb-4">
-            Citrus's Calculator
+            Citrus&apos;s Calculator
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300">
             Precision damage calculations for Roblox anime games

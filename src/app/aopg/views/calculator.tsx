@@ -242,7 +242,6 @@ const Calculator = () => {
         return b.isFruit.includes(buffs.fruitSBuff);
       }),
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buffs.fruitSBuff, selectedMove]);
 
   const scaleToBuffKey: Record<DamageScale, keyof typeof damageBuffs> = {
