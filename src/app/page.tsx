@@ -4,54 +4,54 @@ import UpdateModal from "./components/UpdateModal";
 
 export default function Home() {
   return (
-    <div className="min-h-screen font-[family-name:var(--font-geist-sans)] flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-      <main className="flex flex-col gap-8 items-center p-8">
-        <h1 className="text-5xl font-bold text-white mb-8">
-          Choose Your Calculator
-        </h1>
+    <div className="min-h-screen font-[family-name:var(--font-geist-sans)] flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+      <main className="flex flex-col gap-8 items-center p-8 max-w-6xl">
+        <div className="text-center mb-8">
+          <h1 className="text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent mb-4">
+            Citrus's Calculator
+          </h1>
+          <p className="text-lg text-gray-600 dark:text-gray-300">
+            Precision damage calculations for Roblox anime games
+          </p>
+        </div>
 
         <div className="flex gap-8 flex-wrap justify-center">
           {/* AOPG Calculator Card */}
           <Link href="/aopg">
-            <div className="bg-gradient-to-br from-blue-600 to-blue-800 hover:from-blue-500 hover:to-blue-700 transition-all duration-300 rounded-2xl p-8 w-80 h-64 flex flex-col items-center justify-center cursor-pointer shadow-2xl hover:shadow-blue-500/50 hover:scale-105 transform">
-              <h2 className="text-3xl font-bold text-white mb-4">AOPG</h2>
-              <p className="text-blue-100 text-center text-lg">
-                A One Piece Game Calculator
+            <div className="bg-gradient-to-br from-blue-500 to-blue-700 hover:from-blue-400 hover:to-blue-600 dark:from-blue-600 dark:to-blue-800 dark:hover:from-blue-500 dark:hover:to-blue-700 transition-all duration-300 rounded-2xl p-8 w-80 h-64 flex flex-col items-center justify-center cursor-pointer shadow-lg hover:shadow-2xl hover:shadow-blue-500/40 hover:scale-105 transform">
+              <h2 className="text-4xl font-bold text-white mb-4">AOPG</h2>
+              <p className="text-blue-50 text-center text-lg font-medium">
+                A One Piece Game
               </p>
-              <div className="mt-6 text-sm text-blue-200">Click to enter →</div>
+              <p className="text-blue-100 text-center text-sm mt-2">
+                Damage Calculator
+              </p>
+              <div className="mt-6 text-sm text-blue-50 opacity-75">
+                Click to enter →
+              </div>
             </div>
           </Link>
 
           {/* Pirate Calculator Card */}
           <Link href="/pirate">
-            <div className="bg-gradient-to-br from-purple-600/50 to-purple-800/50 hover:from-purple-500 hover:to-purple-700 transition-all duration-300 rounded-2xl p-8 w-80 h-64 flex flex-col items-center justify-center cursor-pointer shadow-2xl hover:shadow-purple-500/50 hover:scale-105 transform">
-              <h2 className="text-3xl font-bold text-white mb-4">Pirate</h2>
-              <p className="text-purple-100 text-center text-lg">
-                Pirate Piece Calculator
+            <div className="bg-gradient-to-br from-purple-500 to-purple-700 hover:from-purple-400 hover:to-purple-600 dark:from-purple-600 dark:to-purple-800 dark:hover:from-purple-500 dark:hover:to-purple-700 transition-all duration-300 rounded-2xl p-8 w-80 h-64 flex flex-col items-center justify-center cursor-pointer shadow-lg hover:shadow-2xl hover:shadow-purple-500/40 hover:scale-105 transform">
+              <h2 className="text-4xl font-bold text-white mb-4">Pirate</h2>
+              <p className="text-purple-50 text-center text-lg font-medium">
+                Pirate Piece
               </p>
-              <div className="mt-6 text-sm text-purple-200">
+              <p className="text-purple-100 text-center text-sm mt-2">
+                Damage Calculator
+              </p>
+              <div className="mt-6 text-sm text-purple-50 opacity-75">
                 Click to enter →
               </div>
             </div>
           </Link>
-
-          {/* Verse Calculator Card */}
-          {/* <Link href="/verse">
-            <div className="bg-gradient-to-br from-purple-600/50 to-purple-800/50 hover:from-purple-500 hover:to-purple-700 transition-all duration-300 rounded-2xl p-8 w-80 h-64 flex flex-col items-center justify-center cursor-pointer shadow-2xl hover:shadow-purple-500/50 hover:scale-105 transform">
-              <h2 className="text-3xl font-bold text-white mb-4">Verse</h2>
-              <p className="text-purple-100 text-center text-lg">
-                Verse Piece Calculator
-              </p>
-              <div className="mt-6 text-sm text-purple-200">
-                Click to enter →
-              </div>
-            </div>
-          </Link> */}
         </div>
 
         {/* Footer */}
-        <div className="mt-16 text-center">
-          <span className="text-sm text-gray-400 mb-2">
+        <div className="mt-16 text-center border-t border-gray-300 dark:border-gray-700 pt-8 w-full">
+          <span className="text-sm text-gray-600 dark:text-gray-400 mb-4 block">
             Last updated: April 30, 2026
           </span>
           <UpdateModal
@@ -224,9 +224,11 @@ export default function Home() {
               },
             ]}
           />
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-gray-500 dark:text-gray-400 mt-4">
             Need help? DM me on Discord:{" "}
-            <span className="font-semibold text-gray-300">kingcode99</span>
+            <span className="font-semibold text-gray-700 dark:text-gray-200">
+              kingcode99
+            </span>
           </div>
         </div>
       </main>
